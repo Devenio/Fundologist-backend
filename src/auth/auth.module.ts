@@ -17,10 +17,7 @@ config()
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { 
-        expiresIn: '60s'
-      }
+      secret: process.env.JWT_SECRET
     })
   ],
   controllers: [AuthController],

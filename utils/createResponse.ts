@@ -2,13 +2,27 @@ import { HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
 export function createResponse(
-  res: Response,
   statusCode: HttpStatus,
   message: string,
   data: any = null,
   error: any = null,
 ) {
-  const responseBody = { statusCode, message, data, error };
+  return {
+    statusCode,
+    message,
+    data,
+    error
+  }
+}
 
-  res.status(statusCode).json(responseBody);
+export function createOkResponse(
+  message: string,
+  data: any = null
+) {
+  return {
+    statusCode: HttpStatus.OK,
+    message,
+    data,
+    error: null
+  }
 }

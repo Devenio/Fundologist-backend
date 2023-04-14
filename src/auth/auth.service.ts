@@ -2,11 +2,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { User } from 'entities/User';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt/dist';
 import {
-  UnauthorizedException,
-  NotFoundException,
+  ConflictException
 } from '@nestjs/common/exceptions';
 import { UsersService } from 'src/users/users.service';
 import { UsersModel } from 'src/users/users.model';
@@ -20,6 +19,11 @@ export class AuthService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
+    const isUserExist = await this.usersService.findOneByEmail(createUserDto.email);
+    if(isUserExist) {
+      throw new ConflictException('این ایمیل قبلا ثبت شده است')
+    }
+    
     const newUser = this.userRepository.create({
       ...createUserDto,
     });

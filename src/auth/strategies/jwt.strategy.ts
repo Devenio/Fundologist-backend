@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: UserJwtPayload) {
     const user = await this.userService.findOneByEmail(payload.email);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('ایمیل یا پسورد وارد شده نادرست است.');
     }
     return user;
   }

@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
     if (!user) return null;
 
     const passwordMatches = await user.validatePassword(password);
@@ -52,5 +52,9 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async validateUserByEmail(email: string): Promise<User> {
+    return this.usersService.findOneByEmail(email);
   }
 }

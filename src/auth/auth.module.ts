@@ -1,15 +1,15 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './gaurds/auth.service';
 import { User } from 'entities/User';
 import { PassportModule } from '@nestjs/passport/dist';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { config } from 'dotenv';
-import { GoogleStrategy } from './google.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 config()
 @Module({

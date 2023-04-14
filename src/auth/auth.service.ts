@@ -4,12 +4,19 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'entities/User';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt/dist';
+import {
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
+import { UsersService } from 'src/users/users.service';
+import { UsersModel } from 'src/users/users.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly jwtTokenService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly userService: UsersService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
@@ -22,12 +29,26 @@ export class AuthService {
     return newUser;
   }
 
-  async loginWithCredentials(user: User) {
-    delete user.password;
-    const payload = { ...user };
-    
-    return {
-      access_token: this.jwtTokenService.sign(payload),
+  async loginUser(user: User) {
+    const payload = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
     };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userService.findOneByEmail(email);
+    const passwordMatches = await user.validatePassword(password);
+    if (user && passwordMatches) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 }

@@ -1,14 +1,17 @@
 import { UsersService } from './users.service';
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Controller, Get, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService){}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Post()
-    addUser(@Body('name') username: string) {
-        this.usersService.insertUser(username);
-
-        return { message: 'کاربر با موفقیت ذخیره شد' }
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get('')
+  async listAllUsers(
+    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('offset', ParseIntPipe) offset?: number,
+  ) {
+    return this.usersService.findAll(limit, offset);
+  }
 }

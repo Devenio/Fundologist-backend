@@ -1,29 +1,28 @@
-import { AuthGuard } from '@nestjs/passport/dist';
-import { Body, HttpStatus, UseGuards } from '@nestjs/common';
-import { Controller, Post } from '@nestjs/common';
-import { createResponse } from 'utils/createResponse';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
-import { LoginUserDto } from './dto/login-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LocalAuthGuard } from './local-auth.gaurd';
 
 @Controller('auth')
-export class AppController {
-  constructor(private readonly authService: AuthService) {}
+export class AuthController {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.createUser(createUserDto);
-
-    // try {
-    //   await this.authService.createUser(data);
-    //   return createResponse(HttpStatus.OK, 'شما با موفقیت در سایت ثبت نام شدید.');
-    // } catch (error) {
-    // }
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async loginUser(@Body() loginUserDto: LoginUserDto) {
-
+  async loginUser(
+    @Request() req
+  ) {
+    return this.authService.loginUser(req.user);
+    console.log(req.user);
+    return req.user
   }
 }

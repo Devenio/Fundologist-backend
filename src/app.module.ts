@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { config } from 'dotenv';
+import { ConfigModule } from '@nestjs/config';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -26,6 +27,9 @@ if (envConfig.error) {
     }),
     UsersModule,
     AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

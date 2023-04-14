@@ -1,15 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
 
 export function createResponse(
-  statusCode: number,
+  res: Response,
+  statusCode: HttpStatus,
   message: string,
   data: any = null,
   error: any = null,
 ) {
-  return {
-    statusCode: statusCode,
-    message: message,
-    data: data,
-    error: error,
-  };
+  const responseBody = { statusCode, message, data, error };
+
+  res.status(statusCode).json(responseBody);
 }

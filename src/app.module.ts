@@ -9,6 +9,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { Ticket } from 'entities/Ticket';
+import { TicketsModule } from './tickets/tickets.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -47,7 +49,7 @@ if (envConfig.error) {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Ticket],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -55,6 +57,7 @@ if (envConfig.error) {
     }),
     UsersModule,
     AuthModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

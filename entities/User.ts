@@ -7,8 +7,10 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Ticket } from './Ticket';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -30,6 +32,9 @@ export class User extends BaseEntity {
 
   @Column()
   resetToken: string;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets: Ticket[];
 
   @Column()
   @CreateDateColumn()

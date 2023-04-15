@@ -1,12 +1,14 @@
-import { User } from '../entities/User';
-import { UsersModule } from './users/users.module';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { config } from 'dotenv';
+import { User } from '../entities/User';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { config } from 'dotenv';
-import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -15,6 +17,29 @@ if (envConfig.error) {
 
 @Module({
   imports: [
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.MAILER_EMAIL,
+            pass: process.env.MAILER_PASSWORD,
+          },
+        },
+        defaults: {
+          from: '"No Reply" <noreply@example.com>',
+        },
+        // template: {
+        //   dir: '/templates',
+        //   adapter: new HandlebarsAdapter(),
+        //   options: {
+        //     strict: true,
+        //   },
+        // },
+      }),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -25,11 +50,11 @@ if (envConfig.error) {
       entities: [User],
       synchronize: true,
     }),
-    UsersModule,
-    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -18,7 +19,7 @@ config()
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET
-    })
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, UsersService, JwtStrategy, LocalStrategy, GoogleStrategy],

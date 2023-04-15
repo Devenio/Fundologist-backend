@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
 
 export function createResponse(
   statusCode: HttpStatus,

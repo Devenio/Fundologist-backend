@@ -1,5 +1,5 @@
 import { createOkResponse } from 'utils/createResponse';
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Param } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
 import { CreateTicketDto } from './ticket.dto';
@@ -12,7 +12,14 @@ export class TicketsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Request() req) {
-    const tickets = this.ticketsService.findAll(req.user.id);
+    const tickets = await this.ticketsService.findAll(req.user.id);
+    return createOkResponse('درخواست با موفقیت انجام شد', tickets)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:ticketId')
+  async findOne(@Request() req, @Param('ticketId') ticketId: number) {
+    const tickets = await this.ticketsService.findAll(req.user.id);
     return createOkResponse('درخواست با موفقیت انجام شد', tickets)
   }
 

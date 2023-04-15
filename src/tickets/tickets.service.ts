@@ -24,7 +24,7 @@ export class TicketsService {
     userId: string,
   ): Promise<Ticket> {
     const { title, description } = createTicketDto;
-    const ticket = this.ticketRepository.create({ title, description, status: TICKET_STATUSES.OPEN });
+    const ticket = this.ticketRepository.create({ title, description });
     ticket.user = { id: userId } as any;
     return this.ticketRepository.save(ticket);
   }

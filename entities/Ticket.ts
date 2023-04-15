@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  ManyToOne,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './User';
 
 @Entity({ name: 'tickets' })
@@ -12,9 +19,17 @@ export class Ticket {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ default: 'open' })
   status: string;
 
   @ManyToOne(() => User, (user) => user.tickets)
   user: User;
+
+  @Column()
+  @CreateDateColumn()
+  createdAt: string;
+
+  @Column()
+  @UpdateDateColumn()
+  updatedAt: string;
 }

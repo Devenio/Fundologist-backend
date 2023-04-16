@@ -1,3 +1,4 @@
+import { Message } from './Message';
 import {
   Column,
   Entity,
@@ -5,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import { User } from './User';
 
@@ -24,6 +26,9 @@ export class Ticket {
 
   @ManyToOne(() => User, (user) => user.tickets)
   user: User;
+
+  @OneToMany(() => Message, (message) => message.ticket)
+  messages: Message[];
 
   @Column()
   @CreateDateColumn()

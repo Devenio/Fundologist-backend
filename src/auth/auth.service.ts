@@ -34,6 +34,7 @@ export class AuthService {
     await this.userRepository.save(newUser);
 
     delete newUser.password;
+    delete newUser.resetToken;
     return newUser;
   }
 

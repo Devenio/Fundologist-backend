@@ -1,3 +1,4 @@
+import { Message } from './../entities/Message';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { Ticket } from 'entities/Ticket';
 import { TicketsModule } from './tickets/tickets.module';
+import { MessagesModule } from './messages/messages.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -49,7 +51,7 @@ if (envConfig.error) {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Ticket],
+      entities: [User, Ticket, Message],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -58,6 +60,7 @@ if (envConfig.error) {
     UsersModule,
     AuthModule,
     TicketsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

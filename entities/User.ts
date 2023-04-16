@@ -1,3 +1,4 @@
+import { Message } from './Message';
 import {
   BaseEntity,
   Entity,
@@ -27,14 +28,17 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
-  @Column()
+  @Column({ default: "", select: false })
   resetToken: string;
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
+
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
 
   @Column()
   @CreateDateColumn()

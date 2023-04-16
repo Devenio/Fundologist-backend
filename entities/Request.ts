@@ -6,7 +6,6 @@ import {
   ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
-import { Ticket } from './Ticket';
 import { User } from './User';
 
 export enum REQUEST_TYPES {
@@ -17,7 +16,7 @@ export enum REQUEST_TYPES {
 }
 
 @Entity({ name: 'requests' })
-export class Request {
+export class UserRequest {
   @PrimaryGeneratedColumn()
   id: number;
 

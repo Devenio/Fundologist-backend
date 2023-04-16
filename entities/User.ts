@@ -9,12 +9,15 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  OneToOne,
+  JoinColumn
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
-import { Request } from './Request';
+import { UserRequest } from './Request';
 import { Account } from './Account';
+import { UserProfile } from './UserProfile';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -46,11 +49,15 @@ export class User extends BaseEntity {
   @OneToMany(() => Challenge, (challenge) => challenge.user)
   challenges: Challenge[];
 
-  @OneToMany(() => Request, (request) => request.user)
-  requests: Request[];
+  @OneToMany(() => UserRequest, (request) => request.user)
+  requests: UserRequest[];
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToOne(() => UserProfile)
+  @JoinColumn()
+  profile: UserProfile;
 
   @Column()
   @CreateDateColumn()

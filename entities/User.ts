@@ -1,3 +1,4 @@
+import { Challenge } from './Challenge';
 import { Message } from './Message';
 import {
   BaseEntity,
@@ -12,6 +13,8 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
+import { Request } from './Request';
+import { Account } from './Account';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -39,6 +42,15 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
+
+  @OneToMany(() => Challenge, (challenge) => challenge.user)
+  challenges: Challenge[];
+
+  @OneToMany(() => Request, (request) => request.user)
+  requests: Request[];
+
+  @OneToMany(() => Account, (account) => account.user)
+  accounts: Account[];
 
   @Column()
   @CreateDateColumn()

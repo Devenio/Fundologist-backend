@@ -9,19 +9,16 @@ import {
 import { Ticket } from './Ticket';
 import { User } from './User';
 
-@Entity({ name: 'messages' })
-export class Message {
+@Entity({ name: 'accounts' })
+export class Account {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  message: string;
+  description: string;
 
-  @ManyToOne(() => Ticket, (ticket) => ticket.messages)
-  ticket: Ticket;
-
-  @ManyToOne(() => User, (user) => user.messages)
-  user: User
+  @ManyToOne(() => User, (user) => user.requests)
+  user: User;
 
   @Column()
   @CreateDateColumn()

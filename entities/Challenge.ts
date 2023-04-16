@@ -1,3 +1,4 @@
+import { Plan } from './Plan';
 import {
   Column,
   Entity,
@@ -6,22 +7,18 @@ import {
   ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
-import { Ticket } from './Ticket';
 import { User } from './User';
 
-@Entity({ name: 'messages' })
-export class Message {
+@Entity({ name: 'challenges' })
+export class Challenge {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  message: string;
+  @ManyToOne(() => Plan, (plan) => plan.challenges)
+  plan: Plan;
 
-  @ManyToOne(() => Ticket, (ticket) => ticket.messages)
-  ticket: Ticket;
-
-  @ManyToOne(() => User, (user) => user.messages)
-  user: User
+  @ManyToOne(() => User, (user) => user.challenges)
+  user: User;
 
   @Column()
   @CreateDateColumn()

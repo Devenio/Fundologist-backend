@@ -9,7 +9,7 @@ import { Ticket } from 'entities/Ticket';
 import { UserProfile } from 'entities/UserProfile';
 import { TicketMessage } from '../entities/TicketMessage';
 import { User } from '../entities/User';
-import { UserRequest } from '../entities/UserRequest';
+import { UserRequests } from '../entities/UserRequests';
 import { Plan } from './../entities/Plan';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessagesModule } from './messages/messages.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
+import { RequestsModule } from './requests/requests.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -62,7 +63,7 @@ if (envConfig.error) {
         UserAccounts,
         Challenge,
         Plan,
-        UserRequest,
+        UserRequests,
         UserProfile,
       ],
       synchronize: true,
@@ -74,6 +75,7 @@ if (envConfig.error) {
     AuthModule,
     TicketsModule,
     MessagesModule,
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

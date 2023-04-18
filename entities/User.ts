@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
-import { UserRequest } from './UserRequest';
+import { UserRequests } from './UserRequests';
 import { UserAccounts } from './UserAccounts';
 import { UserProfile } from './UserProfile';
 
@@ -49,8 +49,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Challenge, (challenge) => challenge.user)
   challenges: Challenge[];
 
-  @OneToMany(() => UserRequest, (request) => request.user)
-  requests: UserRequest[];
+  @OneToMany(() => UserRequests, (requests) => requests.user)
+  requests: UserRequests[];
 
   @OneToMany(() => UserAccounts, (account) => account.user)
   accounts: UserAccounts[];

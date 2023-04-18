@@ -1,4 +1,4 @@
-import { Message } from './Message';
+import { TicketMessage } from './TicketMessage';
 import {
   Column,
   Entity,
@@ -27,8 +27,8 @@ export class Ticket {
   @ManyToOne(() => User, (user) => user.tickets)
   user: User;
 
-  @OneToMany(() => Message, (message) => message.ticket)
-  messages: Message[];
+  @OneToMany(() => TicketMessage, (message) => message.ticket)
+  messages: TicketMessage[];
 
   @Column()
   @CreateDateColumn()

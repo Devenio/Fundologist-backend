@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesController } from './messages.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Message } from 'entities/Message';
+import { TicketMessage } from 'entities/TicketMessage';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message])],
+  imports: [TypeOrmModule.forFeature([TicketMessage])],
   providers: [MessagesService],
   controllers: [MessagesController]
 })

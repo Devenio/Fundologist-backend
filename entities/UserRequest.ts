@@ -15,7 +15,7 @@ export enum REQUEST_TYPES {
     CREATE_RESET_ACCOUNT = 'CREATE_RESET_ACCOUNT',
 }
 
-@Entity({ name: 'requests' })
+@Entity({ name: 'user_requests' })
 export class UserRequest {
   @PrimaryGeneratedColumn()
   id: number;

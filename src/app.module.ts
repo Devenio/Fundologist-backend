@@ -1,23 +1,22 @@
-import { UserRequest } from './../entities/Request';
-import { Plan } from './../entities/Plan';
-import { Message } from './../entities/Message';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import { Account } from 'entities/Account';
+import { Challenge } from 'entities/Challenge';
+import { Ticket } from 'entities/Ticket';
+import { UserProfile } from 'entities/UserProfile';
+import { TicketMessage } from '../entities/TicketMessage';
 import { User } from '../entities/User';
+import { UserRequest } from '../entities/UserRequest';
+import { Plan } from './../entities/Plan';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { Ticket } from 'entities/Ticket';
-import { TicketsModule } from './tickets/tickets.module';
 import { MessagesModule } from './messages/messages.module';
-import { Account } from 'entities/Account';
-import { Challenge } from 'entities/Challenge';
-import { UserProfile } from 'entities/UserProfile';
+import { TicketsModule } from './tickets/tickets.module';
+import { UsersModule } from './users/users.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -59,7 +58,7 @@ if (envConfig.error) {
       entities: [
         User,
         Ticket,
-        Message,
+        TicketMessage,
         Account,
         Challenge,
         Plan,

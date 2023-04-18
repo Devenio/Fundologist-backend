@@ -9,8 +9,8 @@ import {
 import { Ticket } from './Ticket';
 import { User } from './User';
 
-@Entity({ name: 'messages' })
-export class Message {
+@Entity({ name: 'ticket_messages' })
+export class TicketMessage {
   @PrimaryGeneratedColumn()
   id: number;
 

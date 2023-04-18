@@ -16,7 +16,7 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
 import { UserRequest } from './UserRequest';
-import { Account } from './Account';
+import { UserAccounts } from './UserAccounts';
 import { UserProfile } from './UserProfile';
 
 @Entity({ name: 'users' })
@@ -52,8 +52,8 @@ export class User extends BaseEntity {
   @OneToMany(() => UserRequest, (request) => request.user)
   requests: UserRequest[];
 
-  @OneToMany(() => Account, (account) => account.user)
-  accounts: Account[];
+  @OneToMany(() => UserAccounts, (account) => account.user)
+  accounts: UserAccounts[];
 
   @OneToOne(() => UserProfile)
   @JoinColumn()

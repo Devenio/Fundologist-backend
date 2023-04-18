@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import { Account } from 'entities/Account';
+import { UserAccounts } from 'entities/UserAccounts';
 import { Challenge } from 'entities/Challenge';
 import { Ticket } from 'entities/Ticket';
 import { UserProfile } from 'entities/UserProfile';
@@ -59,7 +59,7 @@ if (envConfig.error) {
         User,
         Ticket,
         TicketMessage,
-        Account,
+        UserAccounts,
         Challenge,
         Plan,
         UserRequest,

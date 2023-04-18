@@ -32,7 +32,7 @@ export class UserRequests {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ default: REQUEST_STATUSES.IN_PROGRESS })
   status: REQUEST_STATUSES;
 
   @ManyToOne(() => User, (user) => user.requests)

@@ -28,10 +28,7 @@ export class AuthService {
       throw new ConflictException('این ایمیل قبلا ثبت شده است');
     }
 
-    const newUser = this.userRepository.create({
-      ...createUserDto,
-    });
-    await this.userRepository.save(newUser);
+    const newUser = await this.usersService.create(createUserDto)
 
     delete newUser.password;
     delete newUser.resetToken;

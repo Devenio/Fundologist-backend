@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   OneToOne,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
@@ -25,6 +25,9 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true, default: null, select: false })
+  telegramUserId: number;
+
   @Column()
   firstName: string;
 
@@ -37,7 +40,7 @@ export class User extends BaseEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ default: "", select: false })
+  @Column({ default: '', select: false })
   resetToken: string;
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
@@ -73,6 +76,7 @@ export class User extends BaseEntity {
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password)
+    console.log(password, this.password, this.firstName);
+    return bcrypt.compare(password, this.password);
   }
 }

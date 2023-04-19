@@ -6,7 +6,6 @@ import {
   ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
-import { Ticket } from './Ticket';
 import { User } from './User';
 
 @Entity({ name: 'user_accounts' })

@@ -18,6 +18,8 @@ import { MessagesModule } from './messages/messages.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
 import { RequestsModule } from './requests/requests.module';
+import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
+import { TelegrafModule } from 'nestjs-telegraf';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -71,11 +73,15 @@ if (envConfig.error) {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TelegrafModule.forRoot({
+      token: process.env.TELEGRAM_BOT_TOKEN
+    }),
     UsersModule,
     AuthModule,
     TicketsModule,
     MessagesModule,
     RequestsModule,
+    TelegramBotModule,
   ],
   controllers: [AppController],
   providers: [AppService],

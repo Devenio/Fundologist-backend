@@ -16,6 +16,28 @@ export class UsersService {
     return user;
   }
 
+  async findOneByTelegramUserId(id: number) {
+    const user = await this.userRepository.findOne({ where: { telegramUserId: id } });
+    return user;
+  }
+
+  async deleteTelegramUserId(fromId: number) {
+    const user = await this.userRepository.findOne({ where: { telegramUserId: fromId } });
+    user.telegramUserId = null;
+    await this.userRepository.save(user)
+    return user;
+  }
+
+  async findOneByEmailAddSelectPassword(email: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password')
+      .getOne();
+
+    return user;
+  }
+
   async create(createUserDto: CreateUserDto) {
     const newUser = this.userRepository.create({
       ...createUserDto,

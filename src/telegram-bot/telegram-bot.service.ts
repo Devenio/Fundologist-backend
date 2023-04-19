@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Hears, Help, On, Start, Update } from 'nestjs-telegraf';
-import { AuthService } from 'src/auth/auth.service';
 import { UsersService } from 'src/users/users.service';
 import { Context } from 'telegraf';
+import { PANEL_BUTTONS, START_BUTTONS } from './buttons';
+import { loginMarkup, panelMarkup } from './reply-markup';
 
 enum ACTION_STEPS {
   STARTER,
   LOGIN_EMAIL,
   LOGIN_PASSWORD,
   LOGGED_IN,
-}
-
-enum START_BUTTONS {
-  LOGIN = 'ورود به حساب کاربری 👤',
 }
 
 @Update()
@@ -32,22 +29,28 @@ export class TelegramBotService {
 
   @Start()
   async startCommand(ctx: Context) {
-    await ctx.reply('به ربات پراپ فرم فاندولوژیست خوش آمدید 😊');
+    const fromId = ctx.from.id;
+    const user = await this.usersService.findOneByTelegramUserId(fromId);
 
-    await ctx.reply('برای استفاده از ربات لطفا ابتدا وارد شوید:', {
-      reply_markup: {
-        keyboard: [[{ text: START_BUTTONS.LOGIN }]],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-      },
-    });
-  }
+    if (user) {
+      await ctx.reply(
+        `
+        سلام ${user.firstName} عزیز.\n\n
+        به ربات فاندولوژیست خوش اومدی
+      `,
+        { reply_markup: panelMarkup },
+      );
+    } else {
+      await ctx.reply('');
 
-  @Hears(START_BUTTONS.LOGIN)
-  async onLogin(ctx: Context) {
-    await ctx.reply('لطفا ایمیل خود را وارد کنید:');
-
-    this.session.actionStep = ACTION_STEPS.LOGIN_EMAIL;
+      await ctx.reply(
+        `به ربات پراپ فرم فاندولوژیست خوش آمدید 😊\n
+        برای استفاده از ربات لطفا ابتدا وارد شوید:`,
+        {
+          reply_markup: loginMarkup,
+        },
+      );
+    }
   }
 
   @On('text')
@@ -55,7 +58,7 @@ export class TelegramBotService {
     if (this.session.actionStep === ACTION_STEPS.LOGIN_EMAIL) {
       await this.onLoginEmailHandler(ctx, ctx.message['text']);
     } else if (this.session.actionStep === ACTION_STEPS.LOGIN_PASSWORD) {
-        await ctx.reply(ctx.message['text'])
+      await ctx.reply(ctx.message['text']);
       await this.onLoginPasswordHandler(ctx, ctx.message['text']);
     }
   }
@@ -71,19 +74,16 @@ export class TelegramBotService {
     const email = this.session.email;
 
     // Authenticate user
-    const user = await this.usersService.findOneByEmail(email);
-    if (user && user.validatePassword(password)) {
+    const user = await this.usersService.findOneByEmailAddSelectPassword(email);
+    if (!user) await ctx.reply('❌ ایمیل یا پسورد وارد شده اشتباه میباشد. ❌');
+
+    const isPasswordValidated = await user.validatePassword(password);
+    if (isPasswordValidated) {
       await this.usersService.addTelegramId(email, ctx.from.id);
       await ctx.reply(
         `${user.firstName} عزیز به ربات فاندولوژیست خوش اومدی 😃`,
         {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'Option 1' }, { text: 'Option 2' }],
-              [{ text: 'Option 3' }, { text: 'Option 4' }],
-            ],
-            resize_keyboard: true,
-          },
+          reply_markup: panelMarkup,
         },
       );
       this.session.actionStep = ACTION_STEPS.LOGGED_IN;
@@ -94,14 +94,28 @@ export class TelegramBotService {
 
       // Show login keyboard button again
       await ctx.reply('لطفا دوباره امتحان کنید:', {
-        reply_markup: {
-          keyboard: [[{ text: START_BUTTONS.LOGIN }]],
-          resize_keyboard: true,
-          one_time_keyboard: false,
-        },
+        reply_markup: loginMarkup,
       });
       this.session.actionStep = ACTION_STEPS.STARTER;
       this.session.email = '';
     }
+  }
+
+  // Panel Button Handlers
+  @Hears(START_BUTTONS.LOGIN)
+  async onLogin(ctx: Context) {
+    await ctx.reply('لطفا ایمیل خود را وارد کنید:');
+
+    this.session.actionStep = ACTION_STEPS.LOGIN_EMAIL;
+  }
+
+  @Hears(PANEL_BUTTONS.LOGOUT)
+  async onLogout(ctx: Context) {
+    console.log('logout');
+    this.session.actionStep = ACTION_STEPS.STARTER;
+    await this.usersService.deleteTelegramUserId(ctx.from.id);
+    await ctx.reply('شما از حساب خود خارج شدید.', {
+      reply_markup: loginMarkup,
+    });
   }
 }

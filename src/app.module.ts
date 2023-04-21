@@ -20,6 +20,10 @@ import { UsersModule } from './users/users.module';
 import { RequestsModule } from './requests/requests.module';
 import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { PlansModule } from './plans/plans.module';
+import { ChallengesModule } from './challenges/challenges.module';
+import { AccountsModule } from './accounts/accounts.module';
+import { UserOrders } from 'entities/UserOrders';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -62,11 +66,12 @@ if (envConfig.error) {
         User,
         Ticket,
         TicketMessage,
-        UserAccounts,
         Challenge,
         Plan,
+        UserAccounts,
         UserRequests,
         UserProfile,
+        UserOrders
       ],
       synchronize: true,
     }),
@@ -82,6 +87,9 @@ if (envConfig.error) {
     MessagesModule,
     RequestsModule,
     TelegramBotModule,
+    PlansModule,
+    ChallengesModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

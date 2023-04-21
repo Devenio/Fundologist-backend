@@ -18,6 +18,7 @@ import { Ticket } from './Ticket';
 import { UserRequests } from './UserRequests';
 import { UserAccounts } from './UserAccounts';
 import { UserProfile } from './UserProfile';
+import { UserOrders } from './UserOrders';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -49,14 +50,14 @@ export class User extends BaseEntity {
   @OneToMany(() => TicketMessage, (message) => message.user)
   messages: TicketMessage[];
 
-  @OneToMany(() => Challenge, (challenge) => challenge.user)
-  challenges: Challenge[];
-
   @OneToMany(() => UserRequests, (requests) => requests.user)
   requests: UserRequests[];
 
   @OneToMany(() => UserAccounts, (account) => account.user)
   accounts: UserAccounts[];
+
+  @OneToMany(() => UserOrders, (orders) => orders.user)
+  orders: UserOrders[];
 
   @OneToOne(() => UserProfile)
   @JoinColumn()

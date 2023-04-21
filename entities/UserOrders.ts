@@ -2,25 +2,23 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Challenge } from './Challenge';
+import { User } from './User';
 
-@Entity({ name: 'plans' })
-export class Plan {
+@Entity({ name: 'user_orders' })
+export class UserOrders {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  title: string;
+  status: string;
 
-  @Column()
-  description: string;
-
-  @OneToMany(() => Challenge, (challenge) => challenge.plan)
-  challenges: Challenge[];
+  @ManyToOne(() => User, (user) => user.orders)
+  user: User[];
 
   @Column()
   @CreateDateColumn()

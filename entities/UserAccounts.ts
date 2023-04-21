@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   ManyToOne,
   UpdateDateColumn,
+  OneToOne
 } from 'typeorm';
+import { Challenge } from './Challenge';
 import { User } from './User';
 
 @Entity({ name: 'user_accounts' })
@@ -18,6 +20,9 @@ export class UserAccounts {
 
   @ManyToOne(() => User, (user) => user.requests)
   user: User;
+
+  @OneToOne(() => Challenge, (challenge) => challenge.account)
+  challenge: Challenge;
 
   @Column()
   @CreateDateColumn()

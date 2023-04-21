@@ -4,9 +4,8 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { Challenge } from './Challenge';
 import { User } from './User';
 
 @Entity({ name: 'user_orders' })

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Challenge } from './Challenge';
 import { User } from './User';
+import { UserWithdraws } from './UserWithdraws';
 
 @Entity({ name: 'user_accounts' })
 export class UserAccounts {
@@ -23,6 +24,9 @@ export class UserAccounts {
 
   @OneToOne(() => Challenge, (challenge) => challenge.account)
   challenge: Challenge;
+
+  @OneToOne(() => UserWithdraws, (withdraw) => withdraw.account)
+  withdraw: UserWithdraws;
 
   @Column()
   @CreateDateColumn()

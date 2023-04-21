@@ -24,6 +24,7 @@ import { PlansModule } from './plans/plans.module';
 import { ChallengesModule } from './challenges/challenges.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { UserOrders } from 'entities/UserOrders';
+import { UserWithdraws } from 'entities/UserWithdraws';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -68,6 +69,7 @@ if (envConfig.error) {
         TicketMessage,
         Challenge,
         Plan,
+        UserWithdraws,
         UserAccounts,
         UserRequests,
         UserProfile,

@@ -25,7 +25,7 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true, default: null, select: false })
+  @Column({ nullable: true, default: null, select: false, type: 'varchar' })
   telegramUserId: number;
 
   @Column()

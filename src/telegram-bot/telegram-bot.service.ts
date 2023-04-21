@@ -41,8 +41,6 @@ export class TelegramBotService {
         { reply_markup: panelMarkup },
       );
     } else {
-      await ctx.reply('');
-
       await ctx.reply(
         `به ربات پراپ فرم فاندولوژیست خوش آمدید 😊\n
         برای استفاده از ربات لطفا ابتدا وارد شوید:`,
@@ -53,12 +51,28 @@ export class TelegramBotService {
     }
   }
 
+  // Panel Button Handlers
+  @Hears(START_BUTTONS.LOGIN)
+  async onLogin(ctx: Context) {
+    await ctx.reply('لطفا ایمیل خود را وارد کنید:');
+
+    this.session.actionStep = ACTION_STEPS.LOGIN_EMAIL;
+  }
+
+  @Hears(PANEL_BUTTONS.LOGOUT)
+  async onLogout(ctx: Context) {
+    this.session.actionStep = ACTION_STEPS.STARTER;
+    await this.usersService.deleteTelegramUserId(ctx.from.id);
+    await ctx.reply('شما از حساب خود خارج شدید.', {
+      reply_markup: loginMarkup,
+    });
+  }
+
   @On('text')
   async onText(ctx: Context) {
     if (this.session.actionStep === ACTION_STEPS.LOGIN_EMAIL) {
       await this.onLoginEmailHandler(ctx, ctx.message['text']);
     } else if (this.session.actionStep === ACTION_STEPS.LOGIN_PASSWORD) {
-      await ctx.reply(ctx.message['text']);
       await this.onLoginPasswordHandler(ctx, ctx.message['text']);
     }
   }
@@ -75,7 +89,7 @@ export class TelegramBotService {
 
     // Authenticate user
     const user = await this.usersService.findOneByEmailAddSelectPassword(email);
-    if (!user) await ctx.reply('❌ ایمیل یا پسورد وارد شده اشتباه میباشد. ❌');
+    if (!user) return this.sendTryAgainMessage(ctx); 
 
     const isPasswordValidated = await user.validatePassword(password);
     if (isPasswordValidated) {
@@ -89,33 +103,19 @@ export class TelegramBotService {
       this.session.actionStep = ACTION_STEPS.LOGGED_IN;
       this.session.email = '';
     } else {
-      // Failed login
-      await ctx.reply('❌ ایمیل یا پسورد وارد شده اشتباه میباشد. ❌');
-
       // Show login keyboard button again
-      await ctx.reply('لطفا دوباره امتحان کنید:', {
-        reply_markup: loginMarkup,
-      });
+      this.sendTryAgainMessage(ctx)
       this.session.actionStep = ACTION_STEPS.STARTER;
       this.session.email = '';
     }
   }
 
-  // Panel Button Handlers
-  @Hears(START_BUTTONS.LOGIN)
-  async onLogin(ctx: Context) {
-    await ctx.reply('لطفا ایمیل خود را وارد کنید:');
-
-    this.session.actionStep = ACTION_STEPS.LOGIN_EMAIL;
-  }
-
-  @Hears(PANEL_BUTTONS.LOGOUT)
-  async onLogout(ctx: Context) {
-    console.log('logout');
-    this.session.actionStep = ACTION_STEPS.STARTER;
-    await this.usersService.deleteTelegramUserId(ctx.from.id);
-    await ctx.reply('شما از حساب خود خارج شدید.', {
-      reply_markup: loginMarkup,
-    });
+  async sendTryAgainMessage(ctx: Context) {
+    await ctx.reply(
+      `❌ ایمیل یا پسورد وارد شده اشتباه میباشد. ❌\n\nلطفا دوباره امتحان کنید:`,
+      {
+        reply_markup: loginMarkup,
+      },
+    );
   }
 }

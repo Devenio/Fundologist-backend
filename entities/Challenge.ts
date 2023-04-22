@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserAccounts } from './UserAccounts';
+import { UserOrders } from './UserOrders';
 
 @Entity({ name: 'challenges' })
 export class Challenge {
@@ -56,6 +57,9 @@ export class Challenge {
 
   @OneToMany(() => UserAccounts, (account) => account.challenge)
   accounts: UserAccounts[];
+
+  @OneToMany(() => UserOrders, (order) => order.challenge)
+  orders: UserOrders[];
 
   @Column()
   @CreateDateColumn()

@@ -1,10 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { BuyAccountDto } from './buy-account.dto';
+import { Controller } from '@nestjs/common';
 
 @Controller('accounts')
-export class AccountsController { 
-    @Post('/new')
-    async findAll(@Body() buyAccountDto: BuyAccountDto) {
-    //   return createOkResponse(null, challenges);
-    }
-}
+export class AccountsController {}

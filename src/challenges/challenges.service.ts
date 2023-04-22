@@ -15,12 +15,22 @@ export class ChallengesService {
     const challenges = await this.challengeRepository.find({
       where: {
         plan: {
-          id: planId
-        }
-      }
+          id: planId,
+        },
+      },
     });
 
-    return challenges
+    return challenges;
+  }
+
+  async findOne(id: number) {
+    const challenge = await this.challengeRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return challenge;
   }
 
   async create(createChallengeDto: CreateChallengeDto) {

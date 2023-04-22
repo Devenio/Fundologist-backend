@@ -42,14 +42,13 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
     };
+    const token = this.jwtService.sign(payload) 
 
-    return {
-      token: this.jwtService.sign(payload),
-    };
+    return token;
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmailAddSelectPassword(email);
     if (!user) return null;
 
     const passwordMatches = await user.validatePassword(password);

@@ -5,11 +5,7 @@ export enum PAYMENT_TYPES {
   ZARINPAL = 'ZARINPAL',
 }
 
-export class BuyAccountDto {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly planId: number;
-
+export class NewOrderDto {
   @IsNumber()
   @IsNotEmpty()
   readonly challengeId: number;

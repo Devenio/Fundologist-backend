@@ -14,4 +14,9 @@ export class PlansService {
     const plan = await this.planRepository.create(createPlanDto);
     return this.planRepository.save(plan)
   }
+
+  async findAll() {
+    const plans = await this.planRepository.find();
+    return plans
+  }
 }

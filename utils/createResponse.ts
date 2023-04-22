@@ -15,7 +15,7 @@ export function createResponse(
 }
 
 export function createOkResponse(
-  message: string,
+  message: string = "success",
   data: any = null
 ) {
   return {

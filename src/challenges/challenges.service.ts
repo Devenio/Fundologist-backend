@@ -11,6 +11,18 @@ export class ChallengesService {
     private challengeRepository: Repository<Challenge>,
   ) {}
 
+  async findAll(planId: number) {
+    const challenges = await this.challengeRepository.find({
+      where: {
+        plan: {
+          id: planId
+        }
+      }
+    });
+
+    return challenges
+  }
+
   async create(createChallengeDto: CreateChallengeDto) {
     const {
       accountGrowthTarget,

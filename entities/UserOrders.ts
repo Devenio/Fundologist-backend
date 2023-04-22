@@ -26,8 +26,8 @@ export class UserOrders {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  orderId: string;
+  @Column({ type: 'varchar' })
+  invoiceId: number;
 
   @Column({ default: ORDER_STATUS.WAITING })
   status: ORDER_STATUS;

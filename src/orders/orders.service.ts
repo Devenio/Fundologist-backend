@@ -20,25 +20,27 @@ export class OrdersService {
   async createNewOrder(data: NewOrderDto, user: User) {
     const challenge = await this.challengesService.findOne(data.challengeId);
 
+    const order = this.ordersRepository.create({ invoiceId: 0 });
+    order.challenge = { id: challenge.id } as any;
+    order.user = { id: user.id } as any;
+    await this.ordersRepository.save(order);
+
     try {
-      const response = await NowPaymentService.post('/invoice', {
+      const { data } = await NowPaymentService.post('/invoice', {
         price_amount: challenge.price,
+        order_id: `${order.id}`,
         price_currency: 'usd',
         pay_currency: 'usdttrc20',
         ipn_callback_url: `${process.env.BACKEND_BASE_URL}/orders/ipn`,
-        success_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/success`,
-        cancel_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/failed`,
+        success_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/success/${order.id}`,
+        cancel_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/failed/${order.id}`,
         is_fee_paid_by_user: false,
       });
 
-      const order = this.ordersRepository.create({
-        orderId: response.data.id,
-      });
-      order.challenge = { id: challenge.id } as any;
-      order.user = { id: user.id } as any;
-      await this.ordersRepository.save(order)
+      order.invoiceId = data.id;
+      await this.ordersRepository.save(order);
 
-      return response;
+      return { data };
     } catch (error) {
       console.log(error);
     }

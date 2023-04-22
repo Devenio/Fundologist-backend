@@ -12,12 +12,12 @@ export class OrdersController {
 
   @Post('/new')
   async createNewOrder(@Body() newOrderDto: NewOrderDto, @Request() req) {
-    const response = await this.ordersService.createNewOrder(
+    const data = await this.ordersService.createNewOrder(
       newOrderDto,
       req.user,
     );
-    console.log(response);
-    return createOkResponse(null, response['invoice_url']);
+    console.log(data);
+    return createOkResponse(null, data);
   }
 
   @Post('/ipn')

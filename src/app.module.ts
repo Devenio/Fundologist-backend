@@ -26,6 +26,8 @@ import { AccountsModule } from './accounts/accounts.module';
 import { UserOrders } from 'entities/UserOrders';
 import { UserWithdraws } from 'entities/UserWithdraws';
 import { WithdrawsModule } from './withdraws/withdraws.module';
+import { PaymentModule } from './payment/payment.module';
+import { OrdersModule } from './orders/orders.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -94,6 +96,8 @@ if (envConfig.error) {
     ChallengesModule,
     AccountsModule,
     WithdrawsModule,
+    PaymentModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

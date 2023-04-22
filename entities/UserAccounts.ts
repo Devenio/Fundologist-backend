@@ -22,7 +22,7 @@ export class UserAccounts {
   @ManyToOne(() => User, (user) => user.requests)
   user: User;
 
-  @OneToOne(() => Challenge, (challenge) => challenge.account)
+  @ManyToOne(() => Challenge, (challenge) => challenge.accounts)
   challenge: Challenge;
 
   @OneToOne(() => UserWithdraws, (withdraw) => withdraw.account)

@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   UpdateDateColumn,
-  OneToOne
+  OneToMany,
 } from 'typeorm';
 import { UserAccounts } from './UserAccounts';
 
@@ -17,45 +17,45 @@ export class Challenge {
 
   @Column()
   fund: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   firstTarget: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   secondTarget: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   minimumTradingDay: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   dailyDrawdown: number;
- 
+
   @Column()
   overallDrawdown: number;
- 
+
   @Column()
   maximumRisk: number;
- 
+
   @Column()
   leverage: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   refund: number;
- 
+
   @Column()
   price: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   accountGrowthTarget: number;
- 
-  @Column()
+
+  @Column({ nullable: true })
   maximumAccountGrowth: number;
- 
+
   @ManyToOne(() => Plan, (plan) => plan.challenges)
   plan: Plan;
-  
-  @OneToOne(() => UserAccounts, (account) => account.challenge)
-  account: UserAccounts;
+
+  @OneToMany(() => UserAccounts, (account) => account.challenge)
+  accounts: UserAccounts[];
 
   @Column()
   @CreateDateColumn()

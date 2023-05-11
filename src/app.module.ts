@@ -28,6 +28,7 @@ import { UserWithdraws } from 'entities/UserWithdraws';
 import { WithdrawsModule } from './withdraws/withdraws.module';
 import { PaymentModule } from './payment/payment.module';
 import { OrdersModule } from './orders/orders.module';
+import { Servers } from 'entities/Servers';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -67,11 +68,12 @@ if (envConfig.error) {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [
-        User,
+        Servers,
+        Plan,
+        Challenge,
         Ticket,
         TicketMessage,
-        Challenge,
-        Plan,
+        User,
         UserWithdraws,
         UserAccounts,
         UserRequests,

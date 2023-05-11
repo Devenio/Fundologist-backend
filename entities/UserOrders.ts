@@ -23,7 +23,7 @@ export enum ORDER_STATUS {
   EXPIRED = 'EXPIRED',
 }
 
-export const enum PLATFORMS {
+export enum PLATFORMS {
   MT4 = 'MT4',
   MT5 = 'MT5',
 }

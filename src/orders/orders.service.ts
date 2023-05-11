@@ -26,20 +26,25 @@ export class OrdersService {
       invoiceId: 0,
       type: NewOrderDto.paymentType,
       platform: NewOrderDto.platform,
+      amount: challenge.price
     });
     order.challenge = { id: challenge.id } as any;
     order.user = { id: user.id } as any;
     await this.ordersRepository.save(order);
 
     try {
+      let data;
+      
       if(NewOrderDto.paymentType === PAYMENT_TYPES.NOW_PAYMENT) {
-        const data = await this.paymentsService.nowPaymentHandler(challenge.price, order.id)
+        data = await this.paymentsService.nowPaymentHandler(challenge.price, order.id)
         order.invoiceId = data.id;
-        await this.ordersRepository.save(order);
-        return { data };
       } else {
-        
+        data = await this.paymentsService.zarinpalHandler(challenge.price, user)
+        order.authority = data.authority;
       }
+      
+      await this.ordersRepository.save(order);
+      return data;
     } catch (error) {
       console.log(error);
     }

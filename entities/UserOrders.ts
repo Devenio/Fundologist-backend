@@ -6,11 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  PrimaryColumn
+  PrimaryColumn,
 } from 'typeorm';
 import { Challenge } from './Challenge';
 import { User } from './User';
- 
+
 export enum ORDER_STATUS {
   WAITING = 'WAITING',
   CONFIRMING = 'CONFIRMING',
@@ -24,13 +24,13 @@ export enum ORDER_STATUS {
 }
 
 export const enum PLATFORMS {
-  MT4 = "MT4",
-  MT5 = "MT5"
+  MT4 = 'MT4',
+  MT5 = 'MT5',
 }
 
 @Entity({ name: 'user_orders' })
 export class UserOrders {
-  @PrimaryGeneratedColumn() 
+  @PrimaryGeneratedColumn()
   id: number;
 
   // For Now Payment
@@ -41,17 +41,20 @@ export class UserOrders {
   @Column({ type: 'varchar', nullable: true })
   authority: string;
 
-  @Column({ default: ORDER_STATUS.WAITING })
+  @Column({ type: 'enum', enum: ORDER_STATUS, default: ORDER_STATUS.WAITING })
   status: ORDER_STATUS;
 
   @Column({
     type: 'enum',
-    enum: PAYMENT_TYPES
+    enum: PAYMENT_TYPES,
   })
   type: PAYMENT_TYPES;
 
   @Column()
   platform: PLATFORMS;
+
+  @Column()
+  amount: number;
 
   @ManyToOne(() => User, (user) => user.orders)
   user: User[];

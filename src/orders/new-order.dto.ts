@@ -1,4 +1,5 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { isEnum, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { PLATFORMS } from 'entities/UserOrders';
 
 export enum PAYMENT_TYPES {
   NOW_PAYMENT = 'NOW_PAYMENT',
@@ -13,6 +14,9 @@ export class NewOrderDto {
   @IsNumber()
   @IsNotEmpty()
   readonly serverId: number;
+
+  @IsNotEmpty()
+  readonly platform: PLATFORMS;
 
   @IsEnum(PAYMENT_TYPES)
   @IsNotEmpty()

@@ -17,12 +17,18 @@ export class OrdersController {
   //   return createOkResponse(null, data);
   // }
 
-  @Post('/new')
+  @Post('/new') 
   async createNewOrder(@Body() newOrderDto: NewOrderDto, @Request() req) {
     const data = await this.ordersService.createNewOrder(newOrderDto, req.user);
     return createOkResponse(null, data);
   }
   
+  @Get('/verify/:authority')
+  async verify(@Param("authority") authority: string) {
+    const data = await this.ordersService.verify(authority);
+    return createOkResponse(null, data);
+  }
+
   @Patch('/confirm/:id')
   async confirmOrder(@Param("id") orderId: number) {
     const order = await this.ordersService.confirmOrder(orderId);

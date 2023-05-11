@@ -8,6 +8,7 @@ import { ChallengesService } from 'src/challenges/challenges.service';
 import { NewOrderDto, PAYMENT_TYPES } from './new-order.dto';
 import { Repository } from 'typeorm';
 import { PaymentService } from 'src/payment/payment.service';
+import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 
 config();
 @Injectable()
@@ -20,13 +21,15 @@ export class OrdersService {
   ) {}
 
   async createNewOrder(NewOrderDto: NewOrderDto, user: User) {
-    const challenge = await this.challengesService.findOne(NewOrderDto.challengeId);
+    const challenge = await this.challengesService.findOne(
+      NewOrderDto.challengeId,
+    );
 
     const order = this.ordersRepository.create({
       invoiceId: 0,
       type: NewOrderDto.paymentType,
       platform: NewOrderDto.platform,
-      amount: challenge.price
+      amount: challenge.price,
     });
     order.challenge = { id: challenge.id } as any;
     order.user = { id: user.id } as any;
@@ -34,32 +37,59 @@ export class OrdersService {
 
     try {
       let data;
-      
-      if(NewOrderDto.paymentType === PAYMENT_TYPES.NOW_PAYMENT) {
-        data = await this.paymentsService.nowPaymentHandler(challenge.price, order.id)
+
+      if (NewOrderDto.paymentType === PAYMENT_TYPES.NOW_PAYMENT) {
+        data = await this.paymentsService.nowPaymentHandler(
+          challenge.price,
+          order.id,
+        );
         order.invoiceId = data.id;
       } else {
-        data = await this.paymentsService.zarinpalHandler(challenge.price, user)
+        data = await this.paymentsService.zarinpalHandler(
+          challenge.price,
+          user,
+        );
         order.authority = data.authority;
       }
-      
+
       await this.ordersRepository.save(order);
       return data;
     } catch (error) {
       console.log(error);
     }
   }
+ 
+  async verify(authority: string) {
+    const order = await this.ordersRepository.findOne({
+      where: {
+        authority,
+      },
+    }); 
+    if(!order) {
+      throw new NotFoundException('سفارشی با این اطلاعات یافت نشد');
+    }
+
+
+    const data = await this.paymentsService.verifyZarinpalPayment(authority, order.amount);
+    if(data.code === 100 || data.code === 101) {
+      await this.confirmOrder(order.id);
+    } else {
+      await this.failedOrder(order.id);
+    }
+
+    return data
+  }
 
   async confirmOrder(orderId: number) {
-    const order = await this.findOne(orderId)
+    const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.CONFIRMED;
-    return this.ordersRepository.save(order)
+    return this.ordersRepository.save(order);
   }
 
   async failedOrder(orderId: number) {
-    const order = await this.findOne(orderId);    
+    const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.FAILED;
-    return this.ordersRepository.save(order)
+    return this.ordersRepository.save(order);
   }
 
   async findAll(userId: number) {
@@ -71,7 +101,9 @@ export class OrdersService {
   }
 
   async findOne(orderId: number) {
-    const order = await this.ordersRepository.findOne({where: {id: orderId}});
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+    });
     return order;
   }
 }

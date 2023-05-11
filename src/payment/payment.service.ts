@@ -37,4 +37,17 @@ export class PaymentService {
 
     return data.data;
   }
+
+  async verifyZarinpalPayment(authority: string, amount: number) {
+    const requestData = {
+      merchant_id: process.env.ZARINPAL_MERCHANT_ID,
+      amount,
+      authority
+    };
+    
+    const { data } = await ZarinpalService.post('/verify.json', requestData);
+    console.log(JSON.stringify(data));
+
+    return data.data;
+  }
 }

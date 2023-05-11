@@ -41,6 +41,13 @@ export class OrdersController {
     return createOkResponse(null, order);
   }
 
+  @Get('/usdt-price')
+  async getUsdtPrice() {
+    console.log("Get usdt price ");
+    const result = await this.ordersService.getUsdtPrice()
+    return createOkResponse(null, result);
+  }
+
   @Post('/ipn')
   async handleIPN(@Body() data: any) {
     console.log(data);

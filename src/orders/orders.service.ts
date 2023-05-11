@@ -9,6 +9,7 @@ import { NewOrderDto, PAYMENT_TYPES } from './new-order.dto';
 import { Repository } from 'typeorm';
 import { PaymentService } from 'src/payment/payment.service';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
+import { WallexService } from 'services/wallexService';
 
 config();
 @Injectable()
@@ -58,26 +59,28 @@ export class OrdersService {
       console.log(error);
     }
   }
- 
+
   async verify(authority: string) {
     const order = await this.ordersRepository.findOne({
       where: {
         authority,
       },
-    }); 
-    if(!order) {
+    });
+    if (!order) {
       throw new NotFoundException('سفارشی با این اطلاعات یافت نشد');
     }
 
-
-    const data = await this.paymentsService.verifyZarinpalPayment(authority, order.amount);
-    if(data.code === 100 || data.code === 101) {
+    const data = await this.paymentsService.verifyZarinpalPayment(
+      authority,
+      order.amount,
+    );
+    if (data.code === 100 || data.code === 101) {
       await this.confirmOrder(order.id);
     } else {
       await this.failedOrder(order.id);
     }
 
-    return data
+    return data;
   }
 
   async confirmOrder(orderId: number) {
@@ -90,6 +93,18 @@ export class OrdersService {
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.FAILED;
     return this.ordersRepository.save(order);
+  }
+
+  async getUsdtPrice() {
+    const response: { result: { price: string; price_expires_at: string } } =
+      await WallexService.get('/account/otc/price', {
+        params: {
+          symbol: 'USDTTMN',
+          side: 'BUY',
+        },
+      });
+    console.log(response);
+    return response.result;
   }
 
   async findAll(userId: number) {

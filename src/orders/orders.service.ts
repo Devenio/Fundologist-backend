@@ -46,8 +46,9 @@ export class OrdersService {
         );
         order.invoiceId = data.id;
       } else {
+        const usdToTmn = await this.getUsdtPrice();
         data = await this.paymentsService.zarinpalHandler(
-          challenge.price,
+          +usdToTmn.price,
           user,
         );
         order.authority = data.authority;

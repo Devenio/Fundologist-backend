@@ -29,6 +29,7 @@ export class PaymentService {
       metadata: {
         email: user.email
       },
+      currency: 'IRT',
       description: "Transaction Description",
       callback_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/verify`,
     };

@@ -10,12 +10,11 @@ import { createOkResponse } from 'utils/createResponse';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  // @Get()
-  // async findAll() {
-  //   const data = await this.ordersService.createNewOrder(newOrderDto, req.user);
-  //   console.log(data);
-  //   return createOkResponse(null, data);
-  // }
+  @Get()
+  async findAll(@Body() body: {skip: number, limit: number}, @Request() req) {
+    const data = await this.ordersService.findAll(req.user.id, body);
+    return createOkResponse(null, data);
+  }
 
   @Post('/new') 
   async createNewOrder(@Body() newOrderDto: NewOrderDto, @Request() req) {

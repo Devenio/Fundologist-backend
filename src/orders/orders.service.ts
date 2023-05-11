@@ -108,9 +108,11 @@ export class OrdersService {
     return response.result;
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: number, options: {skip?: number, limit?: number} = {skip: 0, limit: 50}) {
     const orders = await this.ordersRepository.find({
       where: { user: { id: userId } },
+      skip: options.skip,
+      take: options.limit
     });
 
     return orders;

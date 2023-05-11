@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { User } from './User';
 
 @Entity({ name: 'user_withdraws' })
 export class UserWithdraws {
@@ -21,6 +23,9 @@ export class UserWithdraws {
 
   @OneToOne(() => UserAccounts, (account) => account.withdraw)
   account: UserAccounts;
+
+  @ManyToOne(() => User, (user) => user.withdraws)
+  user: User[];
 
   @Column()
   @CreateDateColumn()

@@ -19,6 +19,7 @@ import { UserRequests } from './UserRequests';
 import { UserAccounts } from './UserAccounts';
 import { UserProfile } from './UserProfile';
 import { UserOrders } from './UserOrders';
+import { UserWithdraws } from './UserWithdraws';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -58,6 +59,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => UserOrders, (orders) => orders.user)
   orders: UserOrders[];
+
+  @OneToMany(() => UserWithdraws, (withdraws) => withdraws.user)
+  withdraws: UserWithdraws[];
 
   @OneToOne(() => UserProfile)
   @JoinColumn()

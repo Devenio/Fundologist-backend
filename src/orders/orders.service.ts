@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { PaymentService } from 'src/payment/payment.service';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { WallexService } from 'services/wallexService';
+import { NobitexService } from 'services/nobitexService';
 
 config();
 @Injectable()
@@ -97,22 +98,24 @@ export class OrdersService {
   }
 
   async getUsdtPrice() {
-    const response: { result: { price: string; price_expires_at: string } } =
-      await WallexService.get('/account/otc/price', {
-        params: {
-          symbol: 'USDTTMN',
-          side: 'BUY',
-        },
-      });
-    console.log(response);
-    return response.result;
+    const {data} = await NobitexService.get('/market/stats', {
+      params: {
+        srcCurrency: 'usdt',
+        dstCurrency: 'rls',
+      }
+    });
+    console.log(data);
+    return data.stats;
   }
 
-  async findAll(userId: number, options: {skip?: number, limit?: number} = {skip: 0, limit: 50}) {
+  async findAll(
+    userId: number,
+    options: { skip?: number; limit?: number } = { skip: 0, limit: 50 },
+  ) {
     const orders = await this.ordersRepository.find({
       where: { user: { id: userId } },
       skip: options.skip,
-      take: options.limit
+      take: options.limit,
     });
 
     return orders;

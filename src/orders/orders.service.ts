@@ -77,7 +77,7 @@ export class OrdersService {
 
     const data = await this.paymentsService.verifyZarinpalPayment(
       authority,
-      order.amount,
+      order.rlsAmount,
     );
     if (data.code === 100 || data.code === 101) {
       await this.confirmOrder(order.id);

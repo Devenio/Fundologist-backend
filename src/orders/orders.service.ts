@@ -23,6 +23,7 @@ export class OrdersService {
   ) {}
 
   async createNewOrder(NewOrderDto: NewOrderDto, user: User) {
+    console.log("create order");
     const challenge = await this.challengesService.findOne(
       NewOrderDto.challengeId,
     );
@@ -47,12 +48,14 @@ export class OrdersService {
         );
         order.invoiceId = data.id;
       } else {
-        const usdToTmn = await this.getUsdtPrice();
+        const rlsPrice = await this.getUsdtPrice();
+        const amount = +rlsPrice * challenge.price; 
         data = await this.paymentsService.zarinpalHandler(
-          +usdToTmn.price,
+          amount,
           user,
         );
         order.authority = data.authority;
+        order.rlsAmount = amount;
       }
 
       await this.ordersRepository.save(order);
@@ -104,8 +107,7 @@ export class OrdersService {
         dstCurrency: 'rls',
       }
     });
-    console.log(data);
-    return data.stats;
+    return data.stats['usdt-rls']['bestSell'];
   }
 
   async findAll(

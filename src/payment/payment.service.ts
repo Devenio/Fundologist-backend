@@ -25,17 +25,16 @@ export class PaymentService {
   async zarinpalHandler(amount: number, user: User) {
     const requestData = {
       merchant_id: process.env.ZARINPAL_MERCHANT_ID,
-      amount: 1000,
+      amount,
       metadata: {
         email: user.email
       },
-      currency: 'IRT',
       description: "Transaction Description",
       callback_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/verify`,
     };
     
     const { data } = await ZarinpalService.post('/request.json', requestData);
-
+    console.log(amount);
     return data.data;
   }
 

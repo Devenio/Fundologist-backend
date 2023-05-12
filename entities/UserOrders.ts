@@ -56,6 +56,9 @@ export class UserOrders {
   @Column()
   amount: number;
 
+  @Column({ nullable: true })
+  rlsAmount: number;
+
   @ManyToOne(() => User, (user) => user.orders)
   user: User[];
 

@@ -41,7 +41,8 @@ if (envConfig.error) {
       useFactory: () => ({
         transport: {
           host: 'smtp.gmail.com',
-          port: 587,
+          port: 465,
+          ignoreTLS: true,
           secure: false,
           auth: {
             user: process.env.MAILER_EMAIL,

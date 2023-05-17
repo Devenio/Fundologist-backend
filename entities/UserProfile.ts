@@ -4,15 +4,28 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  OneToOne
 } from 'typeorm';
+import { Files } from './FIles';
+import { User } from './User';
 
 @Entity({ name: 'user_profile' })
 export class UserProfile {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'blob' })
-  profilePicture: Buffer;
+  @Column()
+  nationalId: string;
+
+  @Column()
+  birthday: string;
+
+  @OneToMany(() => Files, (files) => files.profile)
+  files: Files[];
+
+  @OneToOne(() => User, (user) => user.profile)
+  user: User;
 
   @Column()
   @CreateDateColumn()

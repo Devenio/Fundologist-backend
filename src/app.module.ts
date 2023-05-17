@@ -29,6 +29,8 @@ import { WithdrawsModule } from './withdraws/withdraws.module';
 import { PaymentModule } from './payment/payment.module';
 import { OrdersModule } from './orders/orders.module';
 import { Servers } from 'entities/Servers';
+import { ProfileModule } from './profile/profile.module';
+import { Files } from 'entities/FIles';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -69,6 +71,7 @@ if (envConfig.error) {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [
+        Files,
         Servers,
         Plan,
         Challenge,
@@ -101,6 +104,7 @@ if (envConfig.error) {
     WithdrawsModule,
     PaymentModule,
     OrdersModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

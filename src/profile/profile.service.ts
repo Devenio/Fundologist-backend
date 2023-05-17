@@ -33,8 +33,6 @@ export class ProfileService {
     return this.fileRepository.save(file);
   }
 
-  async saveNationalIdAndBirthday() {}
-
   async createProfile(
     data: {
       nationalId: string;
@@ -68,5 +66,13 @@ export class ProfileService {
     );
 
     return res;
+  }
+
+  async getProfile(userId: number) {
+    const profile = await this.profileRepository.findOne({
+      where: { user: { id: userId } },
+    });
+
+    return profile;
   }
 }

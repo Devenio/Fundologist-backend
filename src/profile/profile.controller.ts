@@ -3,17 +3,21 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   MaxFileSizeValidator,
   ParseFilePipe,
   Post,
   Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateProfileDto } from './create-profile.dto';
 import { ProfileService } from './profile.service';
+import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
@@ -47,5 +51,11 @@ export class ProfileController {
       req.user.id,
     );
     return createOkResponse('اطلاعات با موفقیت ثبت شد', response);
+  }
+
+  @Get()
+  async getProfile(@Request() req) {
+    const profile = await this.profileService.getProfile(req.user.id);
+    return createOkResponse(null, profile);
   }
 }

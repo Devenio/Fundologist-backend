@@ -23,8 +23,10 @@ export class UsersService {
 
   async deleteTelegramUserId(fromId: number) {
     const user = await this.userRepository.findOne({ where: { telegramUserId: fromId } });
-    user.telegramUserId = null;
-    await this.userRepository.save(user)
+    if(user) {
+      user.telegramUserId = null;
+      await this.userRepository.save(user)
+    }
     return user;
   }
 

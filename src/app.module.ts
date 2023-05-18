@@ -32,6 +32,7 @@ import { Servers } from 'entities/Servers';
 import { ProfileModule } from './profile/profile.module';
 import { Files } from 'entities/FIles';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
+import * as cors from 'cors';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -112,6 +113,7 @@ if (envConfig.error) {
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(cors()).forRoutes('*');
     consumer.apply(RequestLoggingMiddleware).forRoutes('*');
   }
 }

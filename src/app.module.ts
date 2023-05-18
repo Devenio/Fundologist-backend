@@ -1,5 +1,5 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
@@ -31,6 +31,7 @@ import { OrdersModule } from './orders/orders.module';
 import { Servers } from 'entities/Servers';
 import { ProfileModule } from './profile/profile.module';
 import { Files } from 'entities/FIles';
+import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -82,7 +83,7 @@ if (envConfig.error) {
         UserAccounts,
         UserRequests,
         UserProfile,
-        UserOrders
+        UserOrders,
       ],
       synchronize: true,
     }),
@@ -90,7 +91,7 @@ if (envConfig.error) {
       isGlobal: true,
     }),
     TelegrafModule.forRoot({
-      token: process.env.TELEGRAM_BOT_TOKEN
+      token: process.env.TELEGRAM_BOT_TOKEN,
     }),
     UsersModule,
     AuthModule,
@@ -109,4 +110,8 @@ if (envConfig.error) {
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggingMiddleware).forRoutes('*');
+  }
+}

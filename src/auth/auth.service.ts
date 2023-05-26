@@ -20,7 +20,27 @@ export class AuthService {
     private readonly mailerService: MailerService,
   ) {}
 
+  createToken(user: User) {
+    const payload = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+    const token = this.jwtService.sign(payload);
+    return token
+  }
+
   async createUser(createUserDto: CreateUserDto) {
+    const newUser = await this.usersService.create(createUserDto);
+
+    delete newUser.password;
+    delete newUser.resetToken;
+
+    return newUser;
+  }
+
+  async register(createUserDto: CreateUserDto) {
     const isUserExist = await this.usersService.findOneByEmail(
       createUserDto.email,
     );
@@ -28,23 +48,16 @@ export class AuthService {
       throw new ConflictException('این ایمیل قبلا ثبت شده است');
     }
 
-    const newUser = await this.usersService.create(createUserDto)
+    const newUser = await this.createUser(createUserDto);
 
-    delete newUser.password;
-    delete newUser.resetToken;
-    return newUser;
+    return {
+      token: this.createToken(newUser),
+      ...newUser
+    }
   }
 
   async loginUser(user: User) {
-    const payload = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    };
-    const token = this.jwtService.sign(payload) 
-
-    return token;
+    return this.createToken(user);
   }
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -74,10 +87,10 @@ export class AuthService {
     user.resetToken = resetToken;
     await this.userRepository.save(user);
     // Send email with reset link
-    const resetPasswordLink = `https://fudologist.ir/reset-password/${resetToken}`;
-    const response = await this.mailerService.sendMail({ 
+    const resetPasswordLink = `https://fundologist.ir/resetPassword?resetToken=${resetToken}`;
+    const response = await this.mailerService.sendMail({
       to: user.email,
-      from: "nimashahbazi524@gmail.com",
+      from: 'nimashahbazi524@gmail.com',
       subject: 'بازگردانی رمز عبور',
       // template: '../templates/forgotPasswordEmail.hbs',
       // context: {
@@ -89,7 +102,7 @@ export class AuthService {
     });
 
     console.log(response);
-    return response
+    return response;
   }
 
   async resetPassword(token: string, newPassword: string) {

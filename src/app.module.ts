@@ -91,9 +91,9 @@ if (envConfig.error) {
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TelegrafModule.forRoot({
-      token: process.env.TELEGRAM_BOT_TOKEN,
-    }),
+    // TelegrafModule.forRoot({
+    //   token: process.env.TELEGRAM_BOT_TOKEN,
+    // }),
     UsersModule,
     AuthModule,
     TicketsModule,

@@ -1,8 +1,6 @@
-import { Body, Controller, Post, Request, UseGuards, Get, Req, Param } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common/enums';
+import { Body, Controller, Get, Param, Query, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UsersService } from 'src/users/users.service';
-import { createOkResponse, createResponse } from 'utils/createResponse';
+import { createOkResponse } from 'utils/createResponse';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LocalAuthGuard } from './gaurds/local-auth.gaurd';
@@ -15,8 +13,8 @@ export class AuthController {
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
-    const newUser = await this.authService.createUser(createUserDto);
-    return createOkResponse('شما با موفقیت ثبت نام شدید برای ادامه لطفا وارد شوید', newUser);
+    const newUser = await this.authService.register(createUserDto);
+    return createOkResponse('به فاندولوژیست خوش آمدید', newUser);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -32,18 +30,20 @@ export class AuthController {
     return createOkResponse('ایمیل بازگردانی رمز عبور برای شما ارسال شد');
   }
 
-  @Post('/reset-password/:token')
+  @Post('/reset-password')
   async resetPassword(
-    @Param('token') token: string,
+    @Query('resetToken') resetToken: string,
     @Body() body: { password: string },
   ) {
-    await this.authService.resetPassword(token, body.password);
+    console.log(resetToken);
+    await this.authService.resetPassword(resetToken, body.password);
     return createOkResponse('پسورد با موفقیت تغییر کرد. لطفا وارد شوید')
   }
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleLogin() {}
+  async googleLogin() {
+  }
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))

@@ -64,7 +64,7 @@ export class OrdersService {
     }
   }
 
-  async verify(authority: string) {
+  async verify(authority: string, status: 'OK' | 'NOK') {
     const order = await this.ordersRepository.findOne({
       where: {
         authority,
@@ -73,27 +73,34 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException('سفارشی با این اطلاعات یافت نشد');
     }
+    console.log(status);
+    if(status === 'OK') {
+      // TODO: call verify api after fix 400 error
 
-    const data = await this.paymentsService.verifyZarinpalPayment(
-      authority,
-      order.rlsAmount,
-    );
-    if (data.code === 100 || data.code === 101) {
-      await this.confirmOrder(order.id);
-    } else {
-      await this.failedOrder(order.id);
-    }
-
-    return data;
+      // const data = await this.paymentsService.verifyZarinpalPayment(
+      //   authority,
+      //   order.rlsAmount,
+      // );
+      // if (data.code === 100 || data.code === 101) {
+        await this.confirmOrder(order.id);
+      // } else {
+      //   await this.failedOrder(order.id);
+      // }
+    } 
+    
+    await this.failedOrder(order.id);
+    return order;
   }
 
   async confirmOrder(orderId: number) {
+    console.log("Confirm Order");
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.CONFIRMED;
     return this.ordersRepository.save(order);
   }
 
   async failedOrder(orderId: number) {
+    console.log("Failed Order");
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.FAILED;
     return this.ordersRepository.save(order);

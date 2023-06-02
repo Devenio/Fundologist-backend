@@ -25,14 +25,14 @@ export class PaymentService {
   async zarinpalHandler(amount: number, user: User) {
     const requestData = {
       merchant_id: process.env.ZARINPAL_MERCHANT_ID,
-      amount,
+      amount: 10000,
       metadata: {
-        email: user.email
+        email: user.email,
       },
-      description: "Transaction Description",
-      callback_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/verify`,
+      description: 'Transaction Description',
+      callback_url: `${process.env.BACKEND_BASE_URL}/orders/verify`,
     };
-    
+
     const { data } = await ZarinpalService.post('/request.json', requestData);
     return data.data;
   }
@@ -41,10 +41,15 @@ export class PaymentService {
     const requestData = {
       merchant_id: process.env.ZARINPAL_MERCHANT_ID,
       amount,
-      authority
+      authority,
     };
-    
-    const { data } = await ZarinpalService.post('/verify.json', requestData);
-    return data.data;
+    try {
+      const { data } = await ZarinpalService.post('/verify.json', requestData);
+      console.log(data);
+      return data.data;
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      return error;
+    }
   }
 }

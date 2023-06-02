@@ -33,6 +33,7 @@ import { ProfileModule } from './profile/profile.module';
 import { Files } from 'entities/FIles';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
 import * as cors from 'cors';
+import { ServersModule } from './servers/servers.module';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -107,6 +108,7 @@ if (envConfig.error) {
     PaymentModule,
     OrdersModule,
     ProfileModule,
+    ServersModule
   ],
   controllers: [AppController],
   providers: [AppService],

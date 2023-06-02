@@ -12,11 +12,16 @@ export class PlansService {
 
   async create(createPlanDto: CreatePlanDto) {
     const plan = await this.planRepository.create(createPlanDto);
-    return this.planRepository.save(plan)
+    return this.planRepository.save(plan);
   }
 
   async findAll() {
-    const plans = await this.planRepository.find();
-    return plans
+    const plans = await this.planRepository
+      .createQueryBuilder('plan')
+      .leftJoinAndSelect('plan.challenges', 'challenge') // Join the challenges associated with each plan
+      .orderBy('plan.createdAt', 'DESC')
+      .getMany();
+
+    return plans;
   }
 }

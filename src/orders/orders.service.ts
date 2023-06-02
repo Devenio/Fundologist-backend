@@ -23,7 +23,6 @@ export class OrdersService {
   ) {}
 
   async createNewOrder(NewOrderDto: NewOrderDto, user: User) {
-    console.log("create order");
     const challenge = await this.challengesService.findOne(
       NewOrderDto.challengeId,
     );

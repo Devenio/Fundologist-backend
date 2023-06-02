@@ -1,5 +1,5 @@
 import { Controller, UseGuards, Post, Body, Request, Get } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { createOkResponse } from 'utils/createResponse';
 import { NewWithdrawDto } from './new-withdraw.dto';
 import { WithdrawsService } from './withdraws.service';

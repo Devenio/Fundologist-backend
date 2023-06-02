@@ -101,7 +101,6 @@ export class AuthService {
       <a href="${resetPasswordLink}">${resetPasswordLink}</a>`,
     });
 
-    console.log(response);
     return response;
   }
 

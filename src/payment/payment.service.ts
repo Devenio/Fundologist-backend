@@ -34,7 +34,6 @@ export class PaymentService {
     };
     
     const { data } = await ZarinpalService.post('/request.json', requestData);
-    console.log(amount);
     return data.data;
   }
 
@@ -46,8 +45,6 @@ export class PaymentService {
     };
     
     const { data } = await ZarinpalService.post('/verify.json', requestData);
-    console.log(JSON.stringify(data));
-
     return data.data;
   }
 }

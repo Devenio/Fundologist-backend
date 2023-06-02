@@ -6,7 +6,7 @@ import {
   Request,
   Get,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { createOkResponse } from 'utils/createResponse';
 import { CreateRequestDto } from './create-request.dto';
 import { RequestsService } from './requests.service';

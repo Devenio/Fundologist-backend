@@ -1,6 +1,6 @@
 import { OrdersService } from './orders.service';
 import { Body, Controller, Post, UseGuards, Get } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { NewOrderDto } from 'src/orders/new-order.dto';
 import { Param, Patch, Request } from '@nestjs/common/decorators';
 import { createOkResponse } from 'utils/createResponse';
@@ -42,14 +42,12 @@ export class OrdersController {
 
   @Get('/usdt-price')
   async getUsdtPrice() {
-    console.log("Get usdt price ");
     const result = await this.ordersService.getUsdtPrice()
     return createOkResponse(null, result);
   }
 
   @Post('/ipn')
   async handleIPN(@Body() data: any) {
-    console.log(data);
     // const response = await this.ordersService.createNewOrder(newOrderDto, req.user)
     //   return createOkResponse(null, challenges);
   }

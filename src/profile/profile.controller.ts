@@ -15,7 +15,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateProfileDto } from './create-profile.dto';
 import { ProfileService } from './profile.service';
-import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')

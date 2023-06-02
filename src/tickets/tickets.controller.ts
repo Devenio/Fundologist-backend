@@ -1,7 +1,7 @@
 import { createOkResponse } from 'utils/createResponse';
 import { Body, Controller, Get, Post, Request, Param } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateTicketDto } from './ticket.dto';
 import { TicketsService } from './tickets.service';
 import { MessagesService } from 'src/messages/messages.service';

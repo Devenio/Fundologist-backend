@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Query, Post, Req, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Query, Post, Req, Request, UseGuards, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { createOkResponse } from 'utils/createResponse';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LocalAuthGuard } from './gaurds/local-auth.gaurd';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +35,6 @@ export class AuthController {
     @Query('resetToken') resetToken: string,
     @Body() body: { password: string },
   ) {
-    console.log(resetToken);
     await this.authService.resetPassword(resetToken, body.password);
     return createOkResponse('پسورد با موفقیت تغییر کرد. لطفا وارد شوید')
   }
@@ -47,9 +46,10 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleLoginCallback(@Req() req) {
+  async googleLoginCallback(@Req() req, @Res() res) {
     const user = req.user;
     const token = await this.authService.loginUser(user);
-    return token
+    // return createOkResponse('با موفقیت وارد شدید', token);
+    return res.redirect(`${process.env.FRONTEND_BASE_URL}/googleRedirect?token=${token}`)
   }
 }

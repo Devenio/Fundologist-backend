@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { createOkResponse } from 'utils/createResponse';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
@@ -10,6 +11,12 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Request() req) {
+    return createOkResponse('', req.user);
+  }
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
@@ -20,8 +27,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async loginUser(@Request() req) {
-    const token = await this.authService.loginUser(req.user); 
-    return createOkResponse('شما با موفقیت وارد شدید', token);
+    const user = await this.authService.loginUser(req.user); 
+    return createOkResponse('شما با موفقیت وارد شدید', user);
   }
 
   @Post('/forgot-password')
@@ -48,7 +55,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleLoginCallback(@Req() req, @Res() res) {
     const user = req.user;
-    const token = await this.authService.loginUser(user);
+    const {token} = await this.authService.loginUser(user);
     // return createOkResponse('با موفقیت وارد شدید', token);
     return res.redirect(`${process.env.FRONTEND_BASE_URL}/googleRedirect?token=${token}`)
   }

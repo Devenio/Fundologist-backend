@@ -57,7 +57,10 @@ export class AuthService {
   }
 
   async loginUser(user: User) {
-    return this.createToken(user);
+    return {
+      ...user, 
+      token: this.createToken(user)
+    };
   }
 
   async validateUser(email: string, password: string): Promise<any> {

@@ -9,7 +9,7 @@ config();
 @Injectable()
 export class PaymentService {
   async nowPaymentHandler(amount: number, orderId: number) {
-    const { data } = await NowPaymentService.post('/invoice', {
+    const nowPaymentsData = {
       price_amount: amount,
       price_currency: 'usd',
       pay_currency: 'usdttrc20',
@@ -17,7 +17,10 @@ export class PaymentService {
       success_url: `${process.env.BACKEND_BASE_URL}/orders/confirm/${orderId}`,
       cancel_url: `${process.env.BACKEND_BASE_URL}/orders/failed/${orderId}`,
       is_fee_paid_by_user: true,
-    });
+    };
+    console.log(nowPaymentsData);
+
+    const { data } = await NowPaymentService.post('/invoice', nowPaymentsData);
 
     return data;
   }
@@ -25,7 +28,7 @@ export class PaymentService {
   async zarinpalHandler(amount: number, user: User) {
     const requestData = {
       merchant_id: process.env.ZARINPAL_MERCHANT_ID,
-      amount: 10000,
+      amount,
       metadata: {
         email: user.email,
       },

@@ -39,7 +39,7 @@ export class OrdersController {
     console.log(authority, status);
     const order = await this.ordersService.verify(authority, status);
     return res.redirect(
-      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=${status}&authority=${order.authority}`,
+      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=${status}&code=${order.authority}`,
     );
   }
 
@@ -47,7 +47,7 @@ export class OrdersController {
   async confirmOrder(@Param('id') orderId: number, @Res() res) {
     const order = await this.ordersService.confirmOrder(orderId);
     return res.redirect(
-      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=OK&authority=${order.invoiceId}`,
+      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=OK&code=${order.invoiceId}`,
     );
   }
 
@@ -55,7 +55,7 @@ export class OrdersController {
   async failedOrder(@Param('id') orderId: number, @Res() res) {
     const order = await this.ordersService.failedOrder(orderId);
     return res.redirect(
-      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=NOK&authority=${order.invoiceId}`,
+      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=NOK&code=${order.invoiceId}`,
     );
   }
 
@@ -67,6 +67,7 @@ export class OrdersController {
 
   @Post('/ipn')
   async handleIPN(@Body() data: any) {
+    console.log("IPN: ", data);
     // const response = await this.ordersService.createNewOrder(newOrderDto, req.user)
     //   return createOkResponse(null, challenges);
   }

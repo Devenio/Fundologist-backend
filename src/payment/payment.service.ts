@@ -14,9 +14,9 @@ export class PaymentService {
       price_currency: 'usd',
       pay_currency: 'usdttrc20',
       ipn_callback_url: `${process.env.BACKEND_BASE_URL}/orders/ipn`,
-      success_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/success/${orderId}`,
-      cancel_url: `${process.env.FRONTEND_BASE_URL}/panel/payments/failed/${orderId}`,
-      is_fee_paid_by_user: false,
+      success_url: `${process.env.BACKEND_BASE_URL}/orders/confirm/${orderId}`,
+      cancel_url: `${process.env.BACKEND_BASE_URL}/orders/failed/${orderId}`,
+      is_fee_paid_by_user: true,
     });
 
     return data;

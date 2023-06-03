@@ -76,19 +76,11 @@ export class OrdersService {
     console.log(status);
     if(status === 'OK') {
       // TODO: call verify api after fix 400 error
-
-      // const data = await this.paymentsService.verifyZarinpalPayment(
-      //   authority,
-      //   order.rlsAmount,
-      // );
-      // if (data.code === 100 || data.code === 101) {
-        await this.confirmOrder(order.id);
-      // } else {
-      //   await this.failedOrder(order.id);
-      // }
-    } 
+      await this.confirmOrder(order.id);
+    } else {
+      await this.failedOrder(order.id);
+    }
     
-    await this.failedOrder(order.id);
     return order;
   }
 

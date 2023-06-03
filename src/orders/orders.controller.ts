@@ -44,15 +44,19 @@ export class OrdersController {
   }
 
   @Put('/confirm/:id')
-  async confirmOrder(@Param('id') orderId: number) {
+  async confirmOrder(@Param('id') orderId: number, @Res() res) {
     const order = await this.ordersService.confirmOrder(orderId);
-    return createOkResponse(null, order);
+    return res.redirect(
+      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=OK&authority=${order.invoiceId}`,
+    );
   }
 
   @Put('/failed/:id')
-  async failedOrder(@Param('id') orderId: number) {
+  async failedOrder(@Param('id') orderId: number, @Res() res) {
     const order = await this.ordersService.failedOrder(orderId);
-    return createOkResponse(null, order);
+    return res.redirect(
+      `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=NOK&authority=${order.invoiceId}`,
+    );
   }
 
   @Get('/usdt-price')

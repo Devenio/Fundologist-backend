@@ -18,8 +18,8 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Body() body: { skip: number; limit: number }, @Request() req) {
-    const data = await this.ordersService.findAll(req.user.id, body);
+  async findAll(@Query() param: { skip: number; limit: number }, @Request() req) {
+    const data = await this.ordersService.findAll(req.user.id, param);
     return createOkResponse(null, data);
   }
 

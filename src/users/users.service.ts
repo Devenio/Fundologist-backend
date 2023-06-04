@@ -47,13 +47,13 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  async findAll(limit?: number, offset?: number) {
+  async findAll(limit?: number, skip?: number) {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     if (limit) {
       queryBuilder.take(limit);
     }
-    if (offset) {
-      queryBuilder.skip(offset);
+    if (skip) {
+      queryBuilder.skip(skip);
     }
     return queryBuilder.getMany();
   }

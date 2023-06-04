@@ -39,8 +39,14 @@ export class User extends BaseEntity {
   @Column()
   avatar: string;
 
+  @Column({ default: false, type: 'boolean' })
+  isAdmin: boolean;
+
   @Column({ unique: true })
   email: string;
+
+  @Column({ nullable: true })
+  phone: string;
 
   @Column({ select: false })
   password: string;

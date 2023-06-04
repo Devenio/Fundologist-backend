@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+import { UserAccounts } from './UserAccounts';
 import { UserOrders } from './UserOrders';
 
 enum PLATFORMS {
@@ -25,6 +26,9 @@ export class Servers {
 
   @OneToMany(() => UserOrders, (orders) => orders.server)
   orders: UserOrders[];
+
+  @OneToMany(() => UserAccounts, (account) => account.server)
+  accounts: UserAccounts[];
 
   @Column({
     type: 'set',

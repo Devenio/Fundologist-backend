@@ -21,11 +21,11 @@ export class UserWithdraws {
   @Column()
   description: string;
 
-  @OneToOne(() => UserAccounts, (account) => account.withdraw)
+  @ManyToOne(() => UserAccounts, (account) => account.withdraws)
   account: UserAccounts;
 
   @ManyToOne(() => User, (user) => user.withdraws)
-  user: User[];
+  user: User;
 
   @Column()
   @CreateDateColumn()

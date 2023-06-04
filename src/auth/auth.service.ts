@@ -10,6 +10,7 @@ import { User } from 'entities/User';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,9 @@ export class AuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      phone: user.phone,
+      isAdmin: user.isAdmin,
+      avatar: user.avatar,
     };
     const token = this.jwtService.sign(payload);
     return token
@@ -118,5 +122,12 @@ export class AuthService {
     user.password = newPassword;
     user.resetToken = null;
     await this.userRepository.save(user);
+  }
+
+  async changePassword(userId: number, newPassword: string) {
+    const user = await this.usersService.findOneById(userId)
+    const password = await bcrypt.hash(newPassword, 8);
+    user.password = password;
+    return this.userRepository.save(user);
   }
 }

@@ -46,6 +46,16 @@ export class AuthController {
     return createOkResponse('پسورد با موفقیت تغییر کرد. لطفا وارد شوید')
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('/change-password')
+  async changePassword(
+    @Body('password') password: string,
+    @Request() req
+  ) {
+    await this.authService.changePassword(req.user.id, password);
+    return createOkResponse('پسورد با موفقیت تغییر کرد. لطفا وارد شوید')
+  }
+
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleLogin() {

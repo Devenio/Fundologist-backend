@@ -4,6 +4,7 @@ import { UsersModel } from './users.model';
 import { User } from 'entities/User';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+import { UpdateUserDto } from './update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,11 @@ export class UsersService {
 
   async findOneByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
+    return user;
+  }
+
+  async findOneById(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     return user;
   }
 
@@ -62,5 +68,16 @@ export class UsersService {
     const user = await this.findOneByEmail(email);
     user.telegramUserId = id;
     return this.userRepository.save(user);
+  }
+
+  async updateUser(userId: number, data: UpdateUserDto) {
+      const user = await this.findOneById(userId);
+
+      if(data.email) user.email = data.email;
+      if(data.firstName) user.firstName = data.firstName;
+      if(data.lastName) user.lastName = data.lastName;
+      if(data.phone) user.phone = data.phone;
+
+      return this.userRepository.save(user)
   }
 }

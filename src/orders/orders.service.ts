@@ -33,6 +33,7 @@ export class OrdersService {
     });
     order.challenge = { id: challenge.id } as any;
     order.user = { id: user.id } as any;
+    order.server = { id: NewOrderDto.serverId } as any;
     await this.ordersRepository.save(order);
 
     try {
@@ -44,12 +45,14 @@ export class OrdersService {
           order.id,
         );
         order.invoiceId = data.id;
+        order.paymentURL = data.invoice_url;
       } else {
         const rlsPrice = await this.getUsdtPrice();
         const amount = +rlsPrice * challenge.price;
         data = await this.paymentsService.zarinpalHandler(amount, user);
         order.authority = data.authority;
         order.rlsAmount = amount;
+        order.paymentURL = `https://www.zarinpal.com/pg/StartPay/${data.authority}`;
       }
 
       await this.ordersRepository.save(order);
@@ -106,12 +109,17 @@ export class OrdersService {
     userId: number,
     options: { skip?: number; limit?: number } = { skip: 0, limit: 50 },
   ) {
-    const orders = await this.ordersRepository.find({
-      where: { user: { id: userId } },
-      skip: options.skip,
-      take: options.limit,
-      order: { createdAt: 'DESC' },
-    });
+    const orders = await this.ordersRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.server', 'server')
+      .leftJoinAndSelect('order.challenge', 'challenge')
+      .leftJoinAndSelect('challenge.plan', 'plan')
+      .select(['order', 'server.title', 'challenge.fund', 'plan.title'])
+      .where('order.user.id = :userId', { userId })
+      .skip(options.skip)
+      .take(options.limit)
+      .orderBy('order.createdAt', 'DESC')
+      .getMany();
 
     return orders;
   }

@@ -9,6 +9,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Challenge } from './Challenge';
+import { Servers } from './Servers';
 import { User } from './User';
 
 export enum ORDER_STATUS {
@@ -59,11 +60,17 @@ export class UserOrders {
   @Column({ nullable: true })
   rlsAmount: number;
 
+  @Column({ nullable: true })
+  paymentURL: string;
+
   @ManyToOne(() => User, (user) => user.orders)
   user: User[];
 
   @ManyToOne(() => Challenge, (challenge) => challenge.orders)
   challenge: Challenge;
+
+  @ManyToOne(() => Servers, (server) => server.orders)
+  server: Servers;
 
   @Column()
   @CreateDateColumn()

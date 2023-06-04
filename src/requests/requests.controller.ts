@@ -5,6 +5,7 @@ import {
   Body,
   Request,
   Get,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { createOkResponse } from 'utils/createResponse';
@@ -26,8 +27,8 @@ export class RequestsController {
   }
 
   @Get()
-  async findAll(@Request() req) {
-    const request = await this.requestsService.findAll(req.user.id);
+  async findAll(@Request() req, @Query() query: {skip: number, limit: number} = {skip: 0, limit: 15}) {
+    const request = await this.requestsService.findAll(req.user.id, query);
     return createOkResponse('درخواست شما با موفقیت ارسال شد', request);
   }
 }

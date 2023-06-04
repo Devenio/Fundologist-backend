@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
+import { UserAccounts } from './UserAccounts';
 
 export enum REQUEST_TYPES {
   CREATE_SECOND_ACCOUNT = 'CREATE_SECOND_ACCOUNT',
@@ -37,6 +38,9 @@ export class UserRequests {
 
   @ManyToOne(() => User, (user) => user.requests)
   user: User;
+
+  @ManyToOne(() => UserAccounts, (user) => user.requests)
+  account: UserAccounts;
 
   @Column()
   @CreateDateColumn()

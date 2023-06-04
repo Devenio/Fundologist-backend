@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 import { REQUEST_TYPES } from 'entities/UserRequests';
 
 export class CreateRequestDto {
@@ -7,6 +7,9 @@ export class CreateRequestDto {
   readonly type: REQUEST_TYPES;
 
   @IsString()
-  @IsNotEmpty()
   readonly description: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly accountId: string;
 }

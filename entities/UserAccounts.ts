@@ -12,6 +12,7 @@ import { Challenge } from './Challenge';
 import { Servers } from './Servers';
 import { User } from './User';
 import { PLATFORMS } from './UserOrders';
+import { UserRequests } from './UserRequests';
 import { UserWithdraws } from './UserWithdraws';
 
 export enum ACCOUNT_LEVELS {
@@ -50,6 +51,9 @@ export class UserAccounts {
 
   @OneToMany(() => UserWithdraws, (withdraw) => withdraw.account)
   withdraws: UserWithdraws[];
+
+  @OneToMany(() => UserRequests, (request) => request.account)
+  requests: UserRequests[];
 
   @Column()
   @CreateDateColumn()

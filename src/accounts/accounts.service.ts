@@ -36,15 +36,31 @@ export class AccountsService {
     return this.accountRepository.save(account);
   }
 
-  async findAll() {
+  async findAll(skip, limit) {
     const accounts = await this.accountRepository
       .createQueryBuilder('account')
       .leftJoinAndSelect('account.server', 'server')
       .leftJoinAndSelect('account.challenge', 'challenge')
       .leftJoinAndSelect('challenge.plan', 'plan')
       .select(['account', 'server.title', 'challenge.fund', 'plan.title'])
+      .skip(skip)
+      .limit(limit)
       .orderBy('account.createdAt', 'DESC')
       .getMany();
+    return accounts;
+  }
+
+  async findAllRealAccounts() {
+    const accounts = await this.accountRepository
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.server', 'server')
+      .leftJoinAndSelect('account.challenge', 'challenge')
+      .leftJoinAndSelect('challenge.plan', 'plan')
+      .select(['account', 'server.title', 'challenge.fund', 'plan.title'])
+      .where('account.level = :level', { level: 'real' })
+      .orderBy('account.createdAt', 'DESC')
+      .getMany();
+
     return accounts;
   }
 }

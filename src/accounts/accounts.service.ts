@@ -20,7 +20,7 @@ export class AccountsService {
       level,
       serverId,
       challengeId,
-      userId
+      userId,
     } = newAccountDto;
 
     const account = this.accountRepository.create();
@@ -34,5 +34,17 @@ export class AccountsService {
     account.user = { id: userId } as any;
 
     return this.accountRepository.save(account);
+  }
+
+  async findAll() {
+    const accounts = await this.accountRepository
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.server', 'server')
+      .leftJoinAndSelect('account.challenge', 'challenge')
+      .leftJoinAndSelect('challenge.plan', 'plan')
+      .select(['account', 'server.title', 'challenge.fund', 'plan.title'])
+      .orderBy('account.createdAt', 'DESC')
+      .getMany();
+    return accounts;
   }
 }

@@ -34,6 +34,7 @@ import { Files } from 'entities/FIles';
 import { RequestLoggingMiddleware } from './middlewares/request-logging.middleware';
 import * as cors from 'cors';
 import { ServersModule } from './servers/servers.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 const envConfig = config({ path: '.env' });
 if (envConfig.error) {
@@ -42,6 +43,10 @@ if (envConfig.error) {
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {

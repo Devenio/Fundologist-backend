@@ -15,6 +15,6 @@ export class NewWithdrawDto {
   @IsNotEmpty()
   readonly accountId: number;
 
-  @IsString()
-  readonly description: PLATFORMS;
+  // @IsString()
+  // readonly description: PLATFORMS;
 }

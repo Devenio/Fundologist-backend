@@ -27,6 +27,6 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  await app.listen(3001);
+  await app.listen(8080, '0.0.0.0');
 }
 bootstrap();

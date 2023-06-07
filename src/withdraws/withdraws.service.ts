@@ -13,7 +13,7 @@ export class WithdrawsService {
 
   async add(data: NewWithdrawDto, userId: number) {
     const withdraw = await this.withdrawsRepository.create({
-      description: data.description,
+      description: '',
       walletAddress: data.walletAddress,
     });
     withdraw.account = { id: data.accountId } as any;
@@ -26,16 +26,15 @@ export class WithdrawsService {
     userId: number,
     options: { skip?: number; limit?: number } = { skip: 0, limit: 50 },
   ) {
-    const withdraw = await this.withdrawsRepository.find({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-      skip: options.skip,
-      take: options.limit
-    });
+    const withdraws = await this.withdrawsRepository
+      .createQueryBuilder('withdraw')
+      .leftJoinAndSelect('withdraw.account', 'account')
+      .where('withdraw.user.id = :userId', { userId })
+      .skip(options.skip)
+      .take(options.limit)
+      .orderBy('withdraw.createdAt', 'DESC')
+      .getMany();
 
-    return withdraw;
+    return withdraws;
   }
 }

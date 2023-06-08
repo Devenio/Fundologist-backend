@@ -9,10 +9,14 @@ import {
   Post,
   Request,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { CreateProfileDto } from './create-profile.dto';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -22,6 +26,23 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
+  @Post('/file')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file) {
+    console.log(file);
+  }
+
+  @Post('/files')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'idCard', maxCount: 1 },
+      { name: 'idCardWithFace', maxCount: 1 },
+    ]),
+  )
+  async uploadFiles(@UploadedFiles() files) {
+    console.log(files);
+  }
+
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -30,7 +51,7 @@ export class ProfileController {
     ]),
   )
   async uploadImage(
-    @UploadedFile(
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 500 * 1024 }),
@@ -39,12 +60,13 @@ export class ProfileController {
       }),
     )
     files: {
-      idCard: Express.Multer.File;
-      idCardWithFace: Express.Multer.File;
+      idCard?: Express.Multer.File;
+      idCardWithFace?: Express.Multer.File;
     },
     @Body() body: CreateProfileDto,
     @Request() req,
   ) {
+    console.log(files);
     const { idCard, idCardWithFace } = files;
     const response = await this.profileService.createProfile(
       { ...body, idCardFile: idCard, idCardWithFaceFile: idCardWithFace },

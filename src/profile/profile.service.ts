@@ -49,6 +49,7 @@ export class ProfileService {
     profile.user = { id: userId } as any;
 
     const res = await this.profileRepository.save(profile);
+    console.log(res, data);
 
     await this.saveFile(
       data.idCardFile.originalname,

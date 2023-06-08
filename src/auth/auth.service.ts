@@ -97,7 +97,6 @@ export class AuthService {
     const resetPasswordLink = `https://fundologist.ir/resetPassword?resetToken=${resetToken}`;
     const response = await this.mailerService.sendMail({
       to: user.email,
-      from: 'nimashahbazi524@gmail.com',
       subject: 'بازگردانی رمز عبور',
       // template: '../templates/forgotPasswordEmail.hbs',
       // context: {

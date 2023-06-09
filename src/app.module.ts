@@ -36,9 +36,11 @@ import * as cors from 'cors';
 import { ServersModule } from './servers/servers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
-const envConfig = config({ path: '.env' });
-if (envConfig.error) {
-  throw new Error(`Error loading .env file: ${envConfig.error}`);
+if(process.env.NODE_ENV !== 'production') {
+  const envConfig = config({ path: '.env' });
+  if (envConfig.error) {
+    throw new Error(`Error loading .env file: ${envConfig.error}`);
+  }
 }
 
 @Module({

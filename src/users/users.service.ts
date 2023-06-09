@@ -5,11 +5,16 @@ import { User } from 'entities/User';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
+import { UserAccounts } from 'entities/UserAccounts';
+import { AccountsService } from 'src/accounts/accounts.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+
+    @InjectRepository(UserAccounts)
+    private accountsRepository: Repository<UserAccounts>,
   ) {}
 
   async findOneByEmail(email: string) {
@@ -23,15 +28,19 @@ export class UsersService {
   }
 
   async findOneByTelegramUserId(id: number) {
-    const user = await this.userRepository.findOne({ where: { telegramUserId: id } });
+    const user = await this.userRepository.findOne({
+      where: { telegramUserId: id },
+    });
     return user;
   }
 
   async deleteTelegramUserId(fromId: number) {
-    const user = await this.userRepository.findOne({ where: { telegramUserId: fromId } });
-    if(user) {
+    const user = await this.userRepository.findOne({
+      where: { telegramUserId: fromId },
+    });
+    if (user) {
       user.telegramUserId = null;
-      await this.userRepository.save(user)
+      await this.userRepository.save(user);
     }
     return user;
   }
@@ -71,13 +80,29 @@ export class UsersService {
   }
 
   async updateUser(userId: number, data: UpdateUserDto) {
-      const user = await this.findOneById(userId);
+    const user = await this.findOneById(userId);
 
-      if(data.email) user.email = data.email;
-      if(data.firstName) user.firstName = data.firstName;
-      if(data.lastName) user.lastName = data.lastName;
-      if(data.phone) user.phone = data.phone;
+    if (data.email) user.email = data.email;
+    if (data.firstName) user.firstName = data.firstName;
+    if (data.lastName) user.lastName = data.lastName;
+    if (data.phone) user.phone = data.phone;
 
-      return this.userRepository.save(user)
+    return this.userRepository.save(user);
+  }
+
+  // Admin Methods
+  async getUserAccounts(userId, skip, limit) {
+    const userAccounts = await this.accountsRepository
+      .createQueryBuilder('account')
+      .leftJoinAndSelect('account.server', 'server')
+      .leftJoinAndSelect('account.challenge', 'challenge')
+      .leftJoinAndSelect('challenge.plan', 'plan')
+      .where('account.user.id = :userId', { userId })
+      .skip(skip)
+      .limit(limit)
+      .orderBy('account.createdAt', 'DESC')
+      .getMany();
+
+    return userAccounts;
   }
 }

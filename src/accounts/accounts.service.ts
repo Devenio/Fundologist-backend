@@ -36,18 +36,26 @@ export class AccountsService {
     return this.accountRepository.save(account);
   }
 
-  async findAll(skip, limit) {
+  async findAll(userId, skip, limit) {
     const accounts = await this.accountRepository
       .createQueryBuilder('account')
       .leftJoinAndSelect('account.server', 'server')
       .leftJoinAndSelect('account.challenge', 'challenge')
       .leftJoinAndSelect('challenge.plan', 'plan')
+      .where('account.user.id = :userId', { userId })
       .select(['account', 'server.title', 'challenge.fund', 'plan.title'])
       .skip(skip)
       .limit(limit)
       .orderBy('account.createdAt', 'DESC')
       .getMany();
     return accounts;
+  }
+
+  async findOne(accountId) {
+    const account = await this.accountRepository.findOne({
+      where: {id: accountId}
+    })
+    return account;
   }
 
   async findAllRealAccounts() {
@@ -62,5 +70,13 @@ export class AccountsService {
       .getMany();
 
     return accounts;
+  }
+
+  // Admin Services
+  async updateUserAccountStatus(accountId, status) {
+    const account = await this.findOne(accountId);
+    account.status = status;
+
+    return this.accountRepository.save(account);
   }
 }

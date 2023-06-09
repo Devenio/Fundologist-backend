@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { ACCOUNT_STATUS } from 'entities/UserAccounts';
 import { IsAdminGuard } from 'src/auth/guards/is-admin.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { createOkResponse } from 'utils/createResponse';
@@ -17,9 +18,16 @@ export class AccountsController {
     return createOkResponse('', account);
   }
 
+  @UseGuards(IsAdminGuard)
+  @Post('/:id')
+  async updateAccountStatus(@Param('id') accountId: number, @Body('status') status: ACCOUNT_STATUS) {
+    const account = await this.accountsService.updateUserAccountStatus(accountId, status);
+    return createOkResponse('', account);
+  }
+
   @Get()
-  async findAll(@Query() query: {skip: number, limit: number} = {skip: 0, limit: 50}) {
-    const accounts = await this.accountsService.findAll(query.skip, query.limit);
+  async findAll(@Query() query: {skip: number, limit: number} = {skip: 0, limit: 50}, @Request() req) {
+    const accounts = await this.accountsService.findAll(req.user.id, query.skip, query.limit);
     return createOkResponse('', accounts);
   }
 

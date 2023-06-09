@@ -28,6 +28,17 @@ export class UsersController {
     const users = await this.usersService.findAll(limit, skip);
     return createOkResponse('', users)
   }
+
+  @UseGuards(IsAdminGuard)
+  @Get('/:id/accounts')
+  async findUserAccounts(
+    @Param('id') userId: string,
+    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('skip', ParseIntPipe) skip?: number,
+  ) {
+    const accounts = await this.usersService.getUserAccounts(userId, skip, limit);
+    return createOkResponse('', accounts)
+  }
   
   @Patch('/:id')
   async updateUser(

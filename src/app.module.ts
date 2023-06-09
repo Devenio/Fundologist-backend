@@ -100,12 +100,12 @@ if (envConfig.error) {
     // TelegrafModule.forRoot({
     //   token: process.env.TELEGRAM_BOT_TOKEN,
     // }),
+    // TelegramBotModule,
     UsersModule,
     AuthModule,
     TicketsModule,
     MessagesModule,
     RequestsModule,
-    TelegramBotModule,
     PlansModule,
     ChallengesModule,
     AccountsModule,

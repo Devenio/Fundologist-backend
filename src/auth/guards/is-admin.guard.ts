@@ -24,7 +24,6 @@ export class IsAdminGuard implements CanActivate {
     // Implement your logic to check if the user is an admin
     // For example, you can check if the user has an 'admin' role or any other criteria
     const isAdminUser = user.isAdmin;
-    console.log(user);
 
     return isAdminUser; // Return true if the user is an admin, otherwise false
   }

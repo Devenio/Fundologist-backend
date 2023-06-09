@@ -27,23 +27,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Post('/file')
-  @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file) {
-    console.log(file);
-  }
-
-  @Post('/files')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'idCard', maxCount: 1 },
-      { name: 'idCardWithFace', maxCount: 1 },
-    ]),
-  )
-  async uploadFiles(@UploadedFiles() files) {
-    console.log(files);
-  }
-
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -67,7 +50,6 @@ export class ProfileController {
     @Body() body: CreateProfileDto,
     @Request() req,
   ) {
-    // console.log(files);
     let { idCard, idCardWithFace } = files;
     idCard = idCard[0];
     idCardWithFace = idCardWithFace[0];

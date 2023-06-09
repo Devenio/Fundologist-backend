@@ -18,7 +18,6 @@ export class PaymentService {
       cancel_url: `${process.env.BACKEND_BASE_URL}/orders/failed/${orderId}`,
       is_fee_paid_by_user: true,
     };
-    console.log(nowPaymentsData);
 
     const { data } = await NowPaymentService.post('/invoice', nowPaymentsData);
 
@@ -48,10 +47,8 @@ export class PaymentService {
     };
     try {
       const { data } = await ZarinpalService.post('/verify.json', requestData);
-      console.log(data);
       return data.data;
     } catch (error) {
-      console.log(JSON.stringify(error));
       return error;
     }
   }

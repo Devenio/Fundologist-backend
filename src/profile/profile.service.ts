@@ -65,9 +65,6 @@ export class ProfileService {
     }
     const res = await this.profileRepository.save(profile);
 
-    console.log(data.idCardFile);
-    console.log(data.idCardWithFaceFile);
-
     await this.saveFile(
       data.idCardFile.originalname,
       data.idCardFile.buffer,

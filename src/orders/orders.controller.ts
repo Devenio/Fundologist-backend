@@ -36,7 +36,6 @@ export class OrdersController {
     @Query('Status') status: 'OK' | 'NOK',
     @Res() res,
   ) {
-    console.log(authority, status);
     const order = await this.ordersService.verify(authority, status);
     return res.redirect(
       `${process.env.FRONTEND_BASE_URL}/panel/payments/verify?status=${status}&code=${order.authority}`,

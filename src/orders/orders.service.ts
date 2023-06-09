@@ -82,14 +82,12 @@ export class OrdersService {
   }
 
   async confirmOrder(orderId: number) {
-    console.log('Confirm Order');
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.CONFIRMED;
     return this.ordersRepository.save(order);
   }
 
   async failedOrder(orderId: number) {
-    console.log('Failed Order');
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.FAILED;
     return this.ordersRepository.save(order);

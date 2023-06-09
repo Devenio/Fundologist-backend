@@ -7,6 +7,7 @@ import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
 import { UserAccounts } from 'entities/UserAccounts';
 import { AccountsService } from 'src/accounts/accounts.service';
+import { UserRequests } from 'entities/UserRequests';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,8 @@ export class UsersService {
 
     @InjectRepository(UserAccounts)
     private accountsRepository: Repository<UserAccounts>,
+    @InjectRepository(UserRequests)
+    private requestRepository: Repository<UserRequests>,
   ) {}
 
   async findOneByEmail(email: string) {
@@ -104,5 +107,17 @@ export class UsersService {
       .getMany();
 
     return userAccounts;
+  }
+  async getUserRequests(userId, skip, limit) {
+    const res = await this.requestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.account', 'account')
+      .where('request.user.id = :userId', { userId })
+      .skip(skip)
+      .take(limit)
+      .orderBy('request.createdAt', 'DESC')
+      .getMany();
+
+    return res;
   }
 }

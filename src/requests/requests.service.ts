@@ -19,7 +19,7 @@ export class RequestsService {
 
     const request = this.requestsRepository.create({ type, description });
     request.user = { id: userId } as any;
-    request.account = { id: accountId } as any; 
+    request.account = { id: accountId } as any;
     const savedRequest = await this.requestsRepository.save(request);
 
     return savedRequest;
@@ -36,5 +36,20 @@ export class RequestsService {
       .getMany();
 
     return requests;
+  }
+
+  async findOne(id) {
+    const res = await this.requestsRepository.findOne({
+      where: {id}
+    })
+    return res;
+  }
+
+  // Admin Services
+  async updateStatus(requestId, status) {
+    const res = await this.findOne(requestId);
+    res.status = status;
+
+    return this.requestsRepository.save(res);
   }
 }

@@ -12,11 +12,12 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { config } from 'dotenv';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { UserAccounts } from 'entities/UserAccounts';
+import { UserRequests } from 'entities/UserRequests';
 
 config()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserAccounts]),
+    TypeOrmModule.forFeature([User, UserAccounts, UserRequests]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET

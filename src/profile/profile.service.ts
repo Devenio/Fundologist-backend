@@ -22,13 +22,22 @@ export class ProfileService {
   ): Promise<Files> {
     const fileName = originalFileName.split('.')[0];
 
-    const file = await this.fileRepository.create({
-      fileName,
-      fileData,
-      fileMimeType,
-      fileType,
-    });
-    file.profile = { id: profileId } as any;
+    let file = await this.findFileWithProfileId(profileId);
+
+    if(!file || file.fileType !== fileType) {
+      file = await this.fileRepository.create({
+        fileName,
+        fileData,
+        fileMimeType,
+        fileType,
+      });
+      file.profile = { id: profileId } as any;
+    } else {
+      file.fileName = fileName;
+      file.fileData = fileData;
+      file.fileMimeType = fileMimeType;
+      file.fileType = fileType; 
+    }
 
     return this.fileRepository.save(file);
   }
@@ -42,14 +51,22 @@ export class ProfileService {
     },
     userId: number,
   ) {
-    const profile = await this.profileRepository.create({
-      birthday: data.birthday,
-      nationalId: data.nationalId,
-    });
-    profile.user = { id: userId } as any;
+    let profile = await this.getProfile(userId);
 
+    if (!profile) {
+      profile = await this.profileRepository.create({
+        birthday: data.birthday,
+        nationalId: data.nationalId,
+      });
+      profile.user = { id: userId } as any;
+    } else {
+      profile.birthday = data.birthday;
+      profile.nationalId = data.nationalId;
+    }
     const res = await this.profileRepository.save(profile);
-    console.log(res, data);
+
+    console.log(data.idCardFile);
+    console.log(data.idCardWithFaceFile);
 
     await this.saveFile(
       data.idCardFile.originalname,
@@ -75,5 +92,13 @@ export class ProfileService {
     });
 
     return profile;
+  }
+
+  async findFileWithProfileId(profileId: number) {
+    const file = await this.fileRepository.findOne({
+      where: { profile: { id: profileId } },
+    });
+
+    return file;
   }
 }

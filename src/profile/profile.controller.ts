@@ -1,9 +1,10 @@
-import { createOkResponse } from 'utils/createResponse';
+import { createOkResponse, createResponse } from 'utils/createResponse';
 import {
   Body,
   Controller,
   FileTypeValidator,
   Get,
+  HttpStatus,
   MaxFileSizeValidator,
   ParseFilePipe,
   Post,
@@ -54,8 +55,8 @@ export class ProfileController {
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 500 * 1024 }),
-          new FileTypeValidator({ fileType: 'image/*' }),
+          // new MaxFileSizeValidator({ maxSize: 500 * 1024 }),
+          // new FileTypeValidator({ fileType: 'image/*' }),
         ],
       }),
     )
@@ -66,8 +67,18 @@ export class ProfileController {
     @Body() body: CreateProfileDto,
     @Request() req,
   ) {
-    console.log(files);
-    const { idCard, idCardWithFace } = files;
+    // console.log(files);
+    let { idCard, idCardWithFace } = files;
+    idCard = idCard[0];
+    idCardWithFace = idCardWithFace[0];
+
+    if(idCard.size > 500 * 1024 || idCardWithFace.size > 500 * 1024) {
+      return createResponse(HttpStatus.BAD_REQUEST, 'سایز فایل آپلودی بیشتر از 500 کیلوبایت');
+    }
+    if(!idCard.mimetype.startsWith('image') || !idCardWithFace.mimetype.startsWith('image')) {
+      return createResponse(HttpStatus.BAD_REQUEST, 'فایل باید از نوع عکس باشد');
+    }
+
     const response = await this.profileService.createProfile(
       { ...body, idCardFile: idCard, idCardWithFaceFile: idCardWithFace },
       req.user.id,

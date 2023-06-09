@@ -2,8 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { SwaggerModule } from '@nestjs/swagger/dist';
+import { config } from 'dotenv';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+
+config()
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +30,6 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  await app.listen(8080, '0.0.0.0');
+  await app.listen(process.env.PORT || 8080, '0.0.0.0');
 }
 bootstrap();

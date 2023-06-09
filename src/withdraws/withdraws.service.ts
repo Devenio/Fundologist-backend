@@ -26,15 +26,37 @@ export class WithdrawsService {
     userId: number,
     options: { skip?: number; limit?: number } = { skip: 0, limit: 50 },
   ) {
+    console.log(options);
     const withdraws = await this.withdrawsRepository
       .createQueryBuilder('withdraw')
       .leftJoinAndSelect('withdraw.account', 'account')
       .where('withdraw.user.id = :userId', { userId })
-      .skip(options.skip)
-      .take(options.limit)
+      .skip(options.skip || 0)
+      .take(options.limit || 50)
       .orderBy('withdraw.createdAt', 'DESC')
       .getMany();
 
     return withdraws;
+  }
+
+  async findOne(id) {
+    const res = await this.withdrawsRepository.findOne({
+      where: {id}
+    })
+    return res;
+  }
+
+  // Admin Services
+  async updateStatus(id, status) {
+    const res = await this.findOne(id);
+    res.status = status;
+
+    return this.withdrawsRepository.save(res);
+  }
+  async updateTaxId(id, taxId) {
+    const res = await this.findOne(id);
+    res.taxId = taxId;
+
+    return this.withdrawsRepository.save(res);
   }
 }

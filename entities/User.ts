@@ -51,6 +51,9 @@ export class User extends BaseEntity {
   @Column({ select: false })
   password: string;
 
+  @Column({ default: false })
+  isAuthenticated: boolean;
+
   @Column({ default: '', select: false })
   resetToken: string;
 

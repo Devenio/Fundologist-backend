@@ -13,11 +13,12 @@ import { config } from 'dotenv';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { UserAccounts } from 'entities/UserAccounts';
 import { UserRequests } from 'entities/UserRequests';
+import { UserWithdraws } from 'entities/UserWithdraws';
 
 config()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserAccounts, UserRequests]),
+    TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET

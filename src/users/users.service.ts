@@ -8,6 +8,7 @@ import { UpdateUserDto } from './update-user.dto';
 import { UserAccounts } from 'entities/UserAccounts';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { UserRequests } from 'entities/UserRequests';
+import { UserWithdraws } from 'entities/UserWithdraws';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +19,8 @@ export class UsersService {
     private accountsRepository: Repository<UserAccounts>,
     @InjectRepository(UserRequests)
     private requestRepository: Repository<UserRequests>,
+    @InjectRepository(UserWithdraws)
+    private withdrawsRepository: Repository<UserWithdraws>,
   ) {}
 
   async findOneByEmail(email: string) {
@@ -116,6 +119,18 @@ export class UsersService {
       .skip(skip)
       .take(limit)
       .orderBy('request.createdAt', 'DESC')
+      .getMany();
+
+    return res;
+  }
+  async getUserWithdraws(userId, skip, limit) {
+    const res = await this.withdrawsRepository
+      .createQueryBuilder('withdraw')
+      .leftJoinAndSelect('withdraw.account', 'account')
+      .where('withdraw.user.id = :userId', { userId })
+      .skip(skip)
+      .take(limit)
+      .orderBy('withdraw.createdAt', 'DESC')
       .getMany();
 
     return res;

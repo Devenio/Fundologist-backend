@@ -59,6 +59,16 @@ export class UsersController {
     const res = await this.usersService.getUserWithdraws(userId, skip, limit);
     return createOkResponse('', res)
   }
+  @UseGuards(IsAdminGuard)
+  @Get('/:id/orders')
+  async findUserOrders(
+    @Param('id') userId: string,
+    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('skip', ParseIntPipe) skip?: number,
+  ) {
+    const res = await this.usersService.getUserOrders(userId, skip, limit);
+    return createOkResponse('', res)
+  }
   
   @Patch('/:id')
   async updateUser(

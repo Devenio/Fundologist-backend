@@ -6,9 +6,10 @@ import { User } from 'entities/User';
 import { UserAccounts } from 'entities/UserAccounts';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
+import { UserOrders } from 'entities/UserOrders';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws])],
+  imports: [TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws, UserOrders])],
   controllers: [UsersController],
   providers: [UsersService],
 })

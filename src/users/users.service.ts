@@ -9,6 +9,7 @@ import { UserAccounts } from 'entities/UserAccounts';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
+import { UserOrders } from 'entities/UserOrders';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,8 @@ export class UsersService {
     private requestRepository: Repository<UserRequests>,
     @InjectRepository(UserWithdraws)
     private withdrawsRepository: Repository<UserWithdraws>,
+    @InjectRepository(UserOrders)
+    private ordersRepository: Repository<UserOrders>,
   ) {}
 
   async findOneByEmail(email: string) {
@@ -131,6 +134,21 @@ export class UsersService {
       .skip(skip)
       .take(limit)
       .orderBy('withdraw.createdAt', 'DESC')
+      .getMany();
+
+    return res;
+  }
+  async getUserOrders(userId, skip, limit) {
+    const res = await this.ordersRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.server', 'server')
+      .leftJoinAndSelect('order.challenge', 'challenge')
+      .leftJoinAndSelect('challenge.plan', 'plan')
+      .select(['order', 'server.title', 'challenge.fund', 'plan.title'])
+      .where('order.user.id = :userId', { userId })
+      .skip(skip)
+      .take(limit)
+      .orderBy('order.createdAt', 'DESC')
       .getMany();
 
     return res;

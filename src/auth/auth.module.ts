@@ -14,11 +14,12 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { UserAccounts } from 'entities/UserAccounts';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
+import { UserOrders } from 'entities/UserOrders';
 
 config()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws]),
+    TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws, UserOrders]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET

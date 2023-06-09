@@ -54,8 +54,6 @@ if(process.env.NODE_ENV !== 'production') {
         transport: {
           host: process.env.LIARA_SMTP_HOST,
           port: process.env.LIARA_SMTP_PORT,
-          ignoreTLS: true,
-          secure: false,
           auth: {
             user: process.env.LIARA_SMTP_USERNAME,
             pass: process.env.LIARA_SMTP_PASSWORD,

@@ -20,6 +20,12 @@ export enum ACCOUNT_LEVELS {
   LEVEL_2 = 'LEVEL_2',
   REAL = 'REAL'
 }
+
+export enum ACCOUNT_STATUS {
+  PASSED = 'PASSED',
+  FAILED = 'FAILED',
+  CHECKING = 'CHECKING'
+}
 @Entity({ name: 'user_accounts' })
 export class UserAccounts {
   @PrimaryGeneratedColumn()
@@ -39,6 +45,13 @@ export class UserAccounts {
 
   @Column()
   level: ACCOUNT_LEVELS;
+
+  @Column({
+    type: 'enum',
+    enum: ACCOUNT_STATUS,
+    default: ACCOUNT_STATUS.CHECKING
+  })
+  status: ACCOUNT_STATUS;
 
   @ManyToOne(() => User, (user) => user.requests)
   user: User;

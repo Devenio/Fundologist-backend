@@ -73,6 +73,9 @@ export class OrdersService {
     }
     if (status === 'OK') {
       // TODO: call verify api after fix 400 error
+      const order = await this.findOneByAuthority(authority);
+      console.log(order.rlsAmount, authority);
+      await this.paymentsService.verifyZarinpalPayment(authority, order.rlsAmount)
       await this.confirmOrder(order.id);
     } else {
       await this.failedOrder(order.id);
@@ -125,6 +128,13 @@ export class OrdersService {
   async findOne(orderId: number) {
     const order = await this.ordersRepository.findOne({
       where: { id: orderId },
+    });
+    return order;
+  }
+
+  async findOneByAuthority(authority: string) {
+    const order = await this.ordersRepository.findOne({
+      where: { authority },
     });
     return order;
   }

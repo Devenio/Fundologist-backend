@@ -47,6 +47,7 @@ export class PaymentService {
     };
     try {
       const { data } = await ZarinpalService.post('/verify.json', requestData);
+      console.log(data);
       return data.data;
     } catch (error) {
       return error;

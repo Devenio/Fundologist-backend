@@ -80,9 +80,9 @@ if(process.env.NODE_ENV !== 'production') {
       database: process.env.DB_NAME,
       entities: [
         // Files,
-        // Servers,
-        // Plan,
-        // Challenge,
+        Servers,
+        Plan,
+        Challenge,
         // Ticket,
         // TicketMessage,
         // User,

@@ -92,7 +92,7 @@ if(process.env.NODE_ENV !== 'production') {
         UserProfile,
         UserOrders,
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     ConfigModule.forRoot({
       isGlobal: true,

@@ -26,22 +26,31 @@ export class Challenge {
   secondTarget: number;
 
   @Column({ nullable: true })
-  minimumTradingDay: number;
+  firstTargetDuration: number;
+
+  @Column({ nullable: true })
+  secondTargetDuration: number;
+
+  @Column({ nullable: true })
+  minimumTradingDays: number;
+
+  @Column({ nullable: true })
+  overallDrawdown: number;
 
   @Column({ nullable: true })
   dailyDrawdown: number;
 
-  @Column()
-  overallDrawdown: number;
-
-  @Column()
+  @Column({ nullable: true })
   maximumRisk: number;
 
-  @Column()
+  @Column({ default: 100 })
   leverage: number;
 
   @Column({ nullable: true })
-  refund: number;
+  hasRefund: boolean;
+
+  @Column({ nullable: true })
+  profitShare: number;
 
   @Column()
   price: number;

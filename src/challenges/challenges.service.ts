@@ -33,36 +33,36 @@ export class ChallengesService {
     return challenge;
   }
 
-  async create(createChallengeDto: CreateChallengeDto) {
-    const {
-      accountGrowthTarget,
-      dailyDrawdown,
-      firstTarget,
-      fund,
-      leverage,
-      maximumAccountGrowth,
-      maximumRisk,
-      minimumTradingDay,
-      overallDrawdown,
-      planId,
-      price,
-      refund,
-      secondTarget,
-    } = createChallengeDto;
-    const challenge = await this.challengeRepository.create({
-      accountGrowthTarget,
-      dailyDrawdown,
-      firstTarget,
-      fund,
-      leverage,
-      maximumAccountGrowth,
-      maximumRisk,
-      minimumTradingDay,
-      overallDrawdown,
-      price,
-      refund,
-      secondTarget,
-    });
-    return this.challengeRepository.save(challenge);
-  }
+  // async create(createChallengeDto: CreateChallengeDto) {
+  //   const {
+  //     accountGrowthTarget,
+  //     dailyDrawdown,
+  //     firstTarget,
+  //     fund,
+  //     leverage,
+  //     maximumAccountGrowth,
+  //     maximumRisk,
+  //     minimumTradingDay,
+  //     overallDrawdown,
+  //     planId,
+  //     price,
+  //     refund,
+  //     secondTarget,
+  //   } = createChallengeDto;
+  //   const challenge = await this.challengeRepository.create({
+  //     accountGrowthTarget,
+  //     dailyDrawdown,
+  //     firstTarget,
+  //     fund,
+  //     leverage,
+  //     maximumAccountGrowth,
+  //     maximumRisk,
+  //     minimumTradingDay,
+  //     overallDrawdown,
+  //     price,
+  //     refund,
+  //     secondTarget,
+  //   });
+  //   return this.challengeRepository.save(challenge);
+  // }
 }

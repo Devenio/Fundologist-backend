@@ -30,6 +30,12 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  if(process.env.NODE_ENV === 'production') {
+    app.enableCors({
+      origin: process.env.FRONTEND_BASE_URL
+    })
+  }
+
   await app.listen(process.env.PORT || 8080, '0.0.0.0');
 }
 bootstrap();

@@ -120,7 +120,9 @@ if(process.env.NODE_ENV !== 'production') {
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cors()).forRoutes('*');
+    if(process.env.NODE_ENV !== 'production') {
+      consumer.apply(cors()).forRoutes('*');
+    }
     consumer.apply(RequestLoggingMiddleware).forRoutes('*');
   }
 }

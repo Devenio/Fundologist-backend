@@ -119,8 +119,8 @@ export class AuthService {
     }
     // Update user's password and clear reset token
     user.password = newPassword;
-    user.resetToken = null;
-    await this.userRepository.save(user);
+    user.resetToken = '';
+    return await this.userRepository.save(user);
   }
 
   async changePassword(userId: number, newPassword: string) {

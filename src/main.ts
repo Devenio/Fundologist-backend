@@ -32,7 +32,7 @@ async function bootstrap() {
 
   if(process.env.NODE_ENV === 'production') {
     app.enableCors({
-      origin: 'https://fundologist.ir'
+      origin: ['https://fundologist.ir', '144.76.201.30']
     })
   }
 

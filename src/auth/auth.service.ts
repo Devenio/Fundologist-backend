@@ -118,7 +118,7 @@ export class AuthService {
       throw new Error('Invalid reset token');
     }
     // Update user's password and clear reset token
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 8);;
     user.resetToken = '';
     return await this.userRepository.save(user);
   }

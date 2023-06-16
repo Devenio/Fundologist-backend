@@ -94,7 +94,7 @@ export class AuthService {
     user.resetToken = resetToken;
     await this.userRepository.save(user);
     // Send email with reset link
-    const resetPasswordLink = `https://fundologist.ir/resetPassword?resetToken=${resetToken}`;
+    const resetPasswordLink = `https://fundologist.ir/auth/resetPassword?resetToken=${resetToken}`;
     const response = await this.mailerService.sendMail({
       to: user.email,
       subject: 'بازگردانی رمز عبور',

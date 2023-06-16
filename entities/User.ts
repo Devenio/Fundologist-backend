@@ -36,7 +36,7 @@ export class User extends BaseEntity {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ nullable: true })
   avatar: string;
 
   @Column({ default: false, type: 'boolean' })

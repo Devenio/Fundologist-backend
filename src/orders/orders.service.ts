@@ -34,7 +34,10 @@ export class OrdersService {
     order.challenge = { id: challenge.id } as any;
     order.user = { id: user.id } as any;
     order.server = { id: NewOrderDto.serverId } as any;
-    await this.ordersRepository.save(order);
+    const savedOrder = await this.ordersRepository.save(order);
+    if(NewOrderDto.paymentType === PAYMENT_TYPES.USDT_WALLET) {
+      return savedOrder
+    }
 
     try {
       let data;
@@ -46,7 +49,7 @@ export class OrdersService {
         );
         order.invoiceId = data.id;
         order.paymentURL = data.invoice_url;
-      } else {
+      } else if(NewOrderDto.paymentType === PAYMENT_TYPES.ZARINPAL) {
         const rlsPrice = await this.getUsdtPrice();
         const amount = +rlsPrice * challenge.price;
         data = await this.paymentsService.zarinpalHandler(amount, user);
@@ -60,6 +63,15 @@ export class OrdersService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async updateTxid(orderId, txid) {
+    const order = await this.findOne(orderId);
+  
+    order.txid = txid;
+    order.status = ORDER_STATUS.CONFIRMING;
+
+    return this.ordersRepository.save(order);
   }
 
   async verify(authority: string, status: 'OK' | 'NOK') {

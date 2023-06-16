@@ -4,6 +4,7 @@ import { PLATFORMS } from 'entities/UserOrders';
 export enum PAYMENT_TYPES {
   NOW_PAYMENT = 'NOW_PAYMENT',
   ZARINPAL = 'ZARINPAL',
+  USDT_WALLET = 'USDT_WALLET'
 }
 
 export class NewOrderDto {

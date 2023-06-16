@@ -54,6 +54,9 @@ export class UserOrders {
   @Column()
   platform: PLATFORMS;
 
+  @Column({ nullable: true })
+  txid: string;
+
   @Column()
   amount: number;
 

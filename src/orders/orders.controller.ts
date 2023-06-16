@@ -24,9 +24,23 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  async findOne(@Param('id') orderId, @Request() req) {
+    const data = await this.ordersService.findOne(orderId);
+    return createOkResponse(null, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/new')
   async createNewOrder(@Body() newOrderDto: NewOrderDto, @Request() req) {
     const data = await this.ordersService.createNewOrder(newOrderDto, req.user);
+    return createOkResponse(null, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id/txid')
+  async updateTXID(@Body('txid') txid: string, @Param('id') orderId: number, @Request() req) {
+    const data = await this.ordersService.updateTxid(orderId, txid);
     return createOkResponse(null, data);
   }
 

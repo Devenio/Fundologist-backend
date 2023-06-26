@@ -1,4 +1,3 @@
-import { MailerModule } from '@nestjs-modules/mailer';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,8 +17,6 @@ import { MessagesModule } from './messages/messages.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { UsersModule } from './users/users.module';
 import { RequestsModule } from './requests/requests.module';
-import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
-import { TelegrafModule } from 'nestjs-telegraf';
 import { PlansModule } from './plans/plans.module';
 import { ChallengesModule } from './challenges/challenges.module';
 import { AccountsModule } from './accounts/accounts.module';
@@ -35,6 +32,10 @@ import { RequestLoggingMiddleware } from './middlewares/request-logging.middlewa
 import * as cors from 'cors';
 import { ServersModule } from './servers/servers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { FundMailerModule } from './fundMailer/fundMailer.module';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+// import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
+// import { TelegrafModule } from 'nestjs-telegraf';
 
 if(process.env.NODE_ENV !== 'production') {
   const envConfig = config({ path: '.env' });
@@ -48,28 +49,6 @@ if(process.env.NODE_ENV !== 'production') {
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
-    }),
-    MailerModule.forRootAsync({
-      useFactory: () => ({
-        transport: {
-          host: process.env.LIARA_SMTP_HOST,
-          port: process.env.LIARA_SMTP_PORT,
-          auth: {
-            user: process.env.LIARA_SMTP_USERNAME,
-            pass: process.env.LIARA_SMTP_PASSWORD,
-          },
-        },
-        defaults: {
-          from: '"No Reply" <support@fundologist.ir>',
-        },
-        // template: {
-        //   dir: '/templates',
-        //   adapter: new HandlebarsAdapter(),
-        //   options: {
-        //     strict: true,
-        //   },
-        // },
-      }),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -113,7 +92,8 @@ if(process.env.NODE_ENV !== 'production') {
     PaymentModule,
     OrdersModule,
     ProfileModule,
-    ServersModule
+    ServersModule,
+    FundMailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

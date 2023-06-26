@@ -98,13 +98,11 @@ export class AuthService {
     const response = await this.mailerService.sendMail({
       to: user.email,
       subject: 'بازگردانی رمز عبور',
-      // template: '../templates/forgotPasswordEmail.hbs',
-      // context: {
-      //   name: user.firstName,
-      //   link: `https://fudologist.ir/reset-password/${resetToken}`,
-      // },
-      html: `برای بازگردانی رمز عبور لطفا روی لینک روبرو کلیک کن: 
-      <a href="${resetPasswordLink}">${resetPasswordLink}</a>`,
+      template: 'forgotPasswordEmail',
+      context: {
+        name: user.firstName,
+        url: resetPasswordLink,
+      },
     });
 
     return response;

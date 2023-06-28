@@ -6,6 +6,7 @@ import {
   Get,
   HttpStatus,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   Request,
@@ -21,6 +22,7 @@ import {
 import { CreateProfileDto } from './create-profile.dto';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { IsAdminGuard } from 'src/auth/guards/is-admin.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')

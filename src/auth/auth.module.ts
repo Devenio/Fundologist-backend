@@ -15,18 +15,21 @@ import { UserAccounts } from 'entities/UserAccounts';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
 import { UserOrders } from 'entities/UserOrders';
+import { ProfileService } from 'src/profile/profile.service';
+import { Files } from 'entities/FIles';
+import { UserProfile } from 'entities/UserProfile';
 
 config()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws, UserOrders]),
+    TypeOrmModule.forFeature([User, UserAccounts, UserRequests, UserWithdraws, UserOrders, Files, UserProfile]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, JwtStrategy, LocalStrategy, GoogleStrategy],
+  providers: [AuthService, UsersService, ProfileService, JwtStrategy, LocalStrategy, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

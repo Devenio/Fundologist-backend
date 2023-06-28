@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Files, FILE_TYPES } from 'entities/FIles';
+import { User } from 'entities/User';
 import { UserProfile } from 'entities/UserProfile';
 import { Repository } from 'typeorm';
 
@@ -11,6 +12,8 @@ export class ProfileService {
     private fileRepository: Repository<Files>,
     @InjectRepository(UserProfile)
     private profileRepository: Repository<UserProfile>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   async saveFile(
@@ -24,7 +27,7 @@ export class ProfileService {
 
     let file = await this.findFileWithProfileId(profileId);
 
-    if(!file || file.fileType !== fileType) {
+    if (!file || file.fileType !== fileType) {
       file = await this.fileRepository.create({
         fileName,
         fileData,
@@ -36,7 +39,7 @@ export class ProfileService {
       file.fileName = fileName;
       file.fileData = fileData;
       file.fileMimeType = fileMimeType;
-      file.fileType = fileType; 
+      file.fileType = fileType;
     }
 
     return this.fileRepository.save(file);

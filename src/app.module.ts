@@ -35,6 +35,8 @@ import { RequestLoggingMiddleware } from './middlewares/request-logging.middlewa
 import * as cors from 'cors';
 import { ServersModule } from './servers/servers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { TournamentsModule } from './tournaments/tournaments.module';
+import { Tournament } from 'entities/Tournament';
 
 if(process.env.NODE_ENV !== 'production') {
   const envConfig = config({ path: '.env' });
@@ -85,6 +87,7 @@ if(process.env.NODE_ENV !== 'production') {
         Servers,
         TicketMessage,
         Ticket,
+        Tournament,
         User,
         UserAccounts,
         UserOrders,
@@ -113,7 +116,8 @@ if(process.env.NODE_ENV !== 'production') {
     PaymentModule,
     OrdersModule,
     ProfileModule,
-    ServersModule
+    ServersModule,
+    TournamentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

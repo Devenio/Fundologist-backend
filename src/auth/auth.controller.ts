@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Query, Post, Req, Request, UseGuards, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ProfileService } from 'src/profile/profile.service';
 import { createOkResponse } from 'utils/createResponse';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,12 +11,18 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly profileService: ProfileService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Request() req) {
-    return createOkResponse('', req.user);
+    const profile = await this.profileService.getProfile(req.user.id);
+
+    const user = {...req.user, isAuthenticating: false};
+    if(profile && !req.user.isAuthenticated) user.isAuthenticating = true;
+
+    return createOkResponse('', user);
   }
 
   @Post('register')
@@ -27,7 +34,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async loginUser(@Request() req) {
-    const user = await this.authService.loginUser(req.user); 
+    const res = await this.authService.loginUser(req.user);
+    const profile = await this.profileService.getProfile(res.id);
+
+    const user = {...res, isAuthenticating: false};
+    if(profile && !res.isAuthenticated) user.isAuthenticating = true;
+
     return createOkResponse('شما با موفقیت وارد شدید', user);
   }
 

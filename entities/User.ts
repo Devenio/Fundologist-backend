@@ -12,6 +12,8 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  ManyToOne,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Ticket } from './Ticket';
@@ -20,6 +22,7 @@ import { UserAccounts } from './UserAccounts';
 import { UserProfile } from './UserProfile';
 import { UserOrders } from './UserOrders';
 import { UserWithdraws } from './UserWithdraws';
+import { Tournament } from './Tournament';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -79,6 +82,13 @@ export class User extends BaseEntity {
   @JoinColumn()
   profile: UserProfile;
 
+  @Column({ nullable: true })
+  tournamentId: number;
+
+  @ManyToOne(() => Tournament, (tournament) => tournament.users)
+  @JoinTable({ name: 'tournamentId' })
+  tournament: Tournament;
+
   @Column()
   @CreateDateColumn()
   createdAt: string;
@@ -93,7 +103,7 @@ export class User extends BaseEntity {
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    const isMatched = await bcrypt.compare(password, this.password); 
+    const isMatched = await bcrypt.compare(password, this.password);
     return isMatched;
   }
 }

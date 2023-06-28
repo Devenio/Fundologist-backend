@@ -26,7 +26,7 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip?: number,
   ) {
     const users = await this.usersService.findAll(limit, skip);
-    return createOkResponse('', users)
+    return createOkResponse('', users);
   }
 
   @UseGuards(IsAdminGuard)
@@ -36,8 +36,12 @@ export class UsersController {
     @Query('limit', ParseIntPipe) limit?: number,
     @Query('skip', ParseIntPipe) skip?: number,
   ) {
-    const accounts = await this.usersService.getUserAccounts(userId, skip, limit);
-    return createOkResponse('', accounts)
+    const accounts = await this.usersService.getUserAccounts(
+      userId,
+      skip,
+      limit,
+    );
+    return createOkResponse('', accounts);
   }
   @UseGuards(IsAdminGuard)
   @Get('/:id/requests')
@@ -47,7 +51,7 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip?: number,
   ) {
     const res = await this.usersService.getUserRequests(userId, skip, limit);
-    return createOkResponse('', res)
+    return createOkResponse('', res);
   }
   @UseGuards(IsAdminGuard)
   @Get('/:id/withdraws')
@@ -57,7 +61,7 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip?: number,
   ) {
     const res = await this.usersService.getUserWithdraws(userId, skip, limit);
-    return createOkResponse('', res)
+    return createOkResponse('', res);
   }
   @UseGuards(IsAdminGuard)
   @Get('/:id/orders')
@@ -67,15 +71,18 @@ export class UsersController {
     @Query('skip', ParseIntPipe) skip?: number,
   ) {
     const res = await this.usersService.getUserOrders(userId, skip, limit);
-    return createOkResponse('', res)
+    return createOkResponse('', res);
   }
-  
+  @UseGuards(IsAdminGuard)
+  @Get('/:id/profile')
+  async findUserProfile(@Param('id') userId: string) {
+    const res = await this.usersService.getUserProfile(userId);
+    return createOkResponse('', res);
+  }
+
   @Patch('/:id')
-  async updateUser(
-    @Body() body: UpdateUserDto,
-    @Param('id') userId: string
-  ) {
+  async updateUser(@Body() body: UpdateUserDto, @Param('id') userId: string) {
     const user = await this.usersService.updateUser(+userId, body);
-    return createOkResponse('اطلاعات شما با موفقیت به روزسانی شد', user)
+    return createOkResponse('اطلاعات شما با موفقیت به روزسانی شد', user);
   }
 }

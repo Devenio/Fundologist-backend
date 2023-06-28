@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { UpdateUserDto } from './update-user.dto';
 import { UserAccounts } from 'entities/UserAccounts';
-import { AccountsService } from 'src/accounts/accounts.service';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
 import { UserOrders } from 'entities/UserOrders';
@@ -69,6 +68,10 @@ export class UsersService {
       ...createUserDto,
     });
     return this.userRepository.save(newUser);
+  }
+
+  async update(user: User) {
+    return this.userRepository.save(user);
   }
 
   async findAll(limit?: number, skip?: number) {
@@ -150,6 +153,16 @@ export class UsersService {
       .take(limit)
       .orderBy('order.createdAt', 'DESC')
       .getMany();
+
+    return res;
+  }
+  async getUserProfile(userId) {
+    const res = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :userId', { userId })
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.files', 'file')
+      .getOne();
 
     return res;
   }

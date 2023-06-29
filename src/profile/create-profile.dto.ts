@@ -6,7 +6,7 @@ export class CreateProfileDto {
   @IsNotEmpty()
   readonly nationalId: string;
 
-  @IsDateString()
+  @IsString()
   @IsNotEmpty()
   readonly birthday: string;
 }

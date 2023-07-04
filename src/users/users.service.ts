@@ -93,17 +93,20 @@ export class UsersService {
     return users.map((user) => {
       const { profile, ...rest } = user;
       const files = {};
-
-      for (const file of profile.files) {
-        if (file.fileType === FILE_TYPES.ID_CARD) {
-          files['idCardFileId'] = file.hash;
+      
+      if(profile && profile.files) {
+        for (const file of profile.files) {
+          if (file.fileType === FILE_TYPES.ID_CARD) {
+            files['idCardFileId'] = file.hash;
+          }
+          if (file.fileType === FILE_TYPES.ID_CARD_WITH_FACE) {
+            files['idCardWithFaceFileId'] = file.hash;
+          }
         }
-        if (file.fileType === FILE_TYPES.ID_CARD_WITH_FACE) {
-          files['idCardWithFaceFileId'] = file.hash;
-        }
+        console.log(files);
+  
+        delete profile.files;
       }
-
-      delete profile.files;
 
       return {
         ...rest,

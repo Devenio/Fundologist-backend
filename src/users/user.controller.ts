@@ -8,6 +8,8 @@ import {
   Patch,
   Body,
   Param,
+  Res,
+  Post,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { IsAdminGuard } from 'src/auth/guards/is-admin.guard';
@@ -77,6 +79,12 @@ export class UsersController {
   @Get('/:id/profile')
   async findUserProfile(@Param('id') userId: string) {
     const res = await this.usersService.getUserProfile(userId);
+    return createOkResponse('', res);
+  }
+  @UseGuards(IsAdminGuard)
+  @Post('/:id/authentication')
+  async updateUserAuthentication(@Param('id') userId: string, @Body('authenticated') authenticated: boolean) {
+    const res = await this.usersService.updateUserAuthentication(userId, authenticated);
     return createOkResponse('', res);
   }
 

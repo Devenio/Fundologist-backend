@@ -31,6 +31,9 @@ export class Files {
   @Column({ type: 'enum', enum: FILE_TYPES })
   fileType: FILE_TYPES;
 
+  @Column({ nullable: true })
+  hash: string;
+
   @ManyToOne(() => UserProfile, (profile) => profile.files)
   profile: UserProfile;
 

@@ -9,6 +9,7 @@ import { UserAccounts } from 'entities/UserAccounts';
 import { UserRequests } from 'entities/UserRequests';
 import { UserWithdraws } from 'entities/UserWithdraws';
 import { UserOrders } from 'entities/UserOrders';
+import { FILE_TYPES } from 'entities/FIles';
 
 @Injectable()
 export class UsersService {
@@ -75,14 +76,41 @@ export class UsersService {
   }
 
   async findAll(limit?: number, skip?: number) {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.files', 'file');
+
     if (limit) {
       queryBuilder.take(limit);
     }
     if (skip) {
       queryBuilder.skip(skip);
     }
-    return queryBuilder.getMany();
+
+    const users = await queryBuilder.getMany();
+
+    return users.map((user) => {
+      const { profile, ...rest } = user;
+      const files = {};
+
+      for (const file of profile.files) {
+        if (file.fileType === FILE_TYPES.ID_CARD) {
+          files['idCardFileId'] = file.hash;
+        }
+        if (file.fileType === FILE_TYPES.ID_CARD_WITH_FACE) {
+          files['idCardWithFaceFileId'] = file.hash;
+        }
+      }
+
+      delete profile.files;
+
+      return {
+        ...rest,
+        ...files,
+        profile,
+      };
+    });
   }
 
   async addTelegramId(email: string, id: number) {
@@ -165,5 +193,12 @@ export class UsersService {
       .getOne();
 
     return res;
+  }
+  async updateUserAuthentication(userId, isAuthenticated) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    user.isAuthenticated = isAuthenticated;
+
+    const res = await this.userRepository.save(user);
+    return res
   }
 }

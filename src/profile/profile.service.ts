@@ -4,6 +4,7 @@ import { Files, FILE_TYPES } from 'entities/FIles';
 import { User } from 'entities/User';
 import { UserProfile } from 'entities/UserProfile';
 import { Repository } from 'typeorm';
+import { generateRandomHash } from 'utils/createHash';
 
 @Injectable()
 export class ProfileService {
@@ -42,7 +43,7 @@ export class ProfileService {
       file.fileType = fileType;
     }
 
-    return this.fileRepository.save(file);
+    return this.fileRepository.save({...file, hash: generateRandomHash(10)});
   }
 
   async createProfile(
@@ -99,6 +100,11 @@ export class ProfileService {
       where: { profile: { id: profileId } },
     });
 
+    return file;
+  }
+
+  async getImageBlobByHash(hash: string) {
+    const file = await this.fileRepository.findOne({ where: { hash } });
     return file;
   }
 }

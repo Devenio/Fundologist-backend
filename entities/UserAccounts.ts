@@ -18,7 +18,8 @@ import { UserWithdraws } from './UserWithdraws';
 export enum ACCOUNT_LEVELS {
   LEVEL_1 = 'LEVEL_1',
   LEVEL_2 = 'LEVEL_2',
-  REAL = 'REAL'
+  REAL = 'REAL',
+  TOURNAMENT = 'TOURNAMENT'
 }
 
 export enum ACCOUNT_STATUS {

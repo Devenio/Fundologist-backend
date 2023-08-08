@@ -6,6 +6,7 @@ import { User } from 'entities/User';
 import { ORDER_STATUS, UserOrders } from 'entities/UserOrders';
 import { NobitexService } from 'services/nobitexService';
 import { ChallengesService } from 'src/challenges/challenges.service';
+import { DiscountCodeService } from 'src/discount-codes/discount-codes.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { Repository } from 'typeorm';
 import { NewOrderDto, PAYMENT_TYPES } from './new-order.dto';
@@ -16,6 +17,7 @@ export class OrdersService {
   constructor(
     private readonly challengesService: ChallengesService,
     private readonly paymentsService: PaymentService,
+    private readonly discountCodeService: DiscountCodeService,
     @InjectRepository(UserOrders)
     private ordersRepository: Repository<UserOrders>,
   ) {}
@@ -24,6 +26,9 @@ export class OrdersService {
     const challenge = await this.challengesService.findOne(
       NewOrderDto.challengeId,
     );
+    if(NewOrderDto.discountCode) {
+      challenge.price = await this.getUpdatedPrice(NewOrderDto.challengeId, NewOrderDto.discountCode);
+    }
 
     const order = this.ordersRepository.create({
       invoiceId: 0,
@@ -106,6 +111,20 @@ export class OrdersService {
     const order = await this.findOne(orderId);
     order.status = ORDER_STATUS.FAILED;
     return this.ordersRepository.save(order);
+  }
+
+  async getUpdatedPrice(challengeId, discountCode) {
+    const challenge = await this.challengesService.findOne(challengeId);
+    const discount = await this.discountCodeService.getDiscountCodeByCode(
+      discountCode,
+    );
+
+    if (!challenge || !discount) {
+      return challenge.price
+    }
+
+    const updatedPrice = challenge.price * (1 - discount.value / 100);
+    return updatedPrice
   }
 
   async getUsdtPrice() {

@@ -37,6 +37,8 @@ import { ServersModule } from './servers/servers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TournamentsModule } from './tournaments/tournaments.module';
 import { Tournament } from 'entities/Tournament';
+import { DiscountCode } from 'entities/DiscountCodes';
+import { DiscountCodeModule } from './discount-codes/discount-codes.module';
 
 if(process.env.NODE_ENV !== 'production') {
   const envConfig = config({ path: '.env' });
@@ -88,6 +90,7 @@ if(process.env.NODE_ENV !== 'production') {
         TicketMessage,
         Ticket,
         Tournament,
+        DiscountCode,
         User,
         UserAccounts,
         UserOrders,
@@ -117,7 +120,8 @@ if(process.env.NODE_ENV !== 'production') {
     OrdersModule,
     ProfileModule,
     ServersModule,
-    TournamentsModule
+    TournamentsModule,
+    DiscountCodeModule
   ],
   controllers: [AppController],
   providers: [AppService],

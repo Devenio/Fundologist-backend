@@ -1,5 +1,5 @@
 import { OrdersService } from './orders.service';
-import { Body, Controller, Post, UseGuards, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, NotFoundException } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { NewOrderDto } from 'src/orders/new-order.dto';
 import {
@@ -11,14 +11,20 @@ import {
   Res,
 } from '@nestjs/common/decorators';
 import { createOkResponse } from 'utils/createResponse';
+import { DiscountCodeService } from 'src/discount-codes/discount-codes.service';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Query() param: { skip: number; limit: number }, @Request() req) {
+  async findAll(
+    @Query() param: { skip: number; limit: number },
+    @Request() req,
+  ) {
     const data = await this.ordersService.findAll(req.user.id, param);
     return createOkResponse(null, data);
   }
@@ -66,7 +72,7 @@ export class OrdersController {
 
   @Post('/ipn')
   async handleIPN(@Body() data: any) {
-    console.log("IPN: ", data);
+    console.log('IPN: ', data);
     // const response = await this.ordersService.createNewOrder(newOrderDto, req.user)
     //   return createOkResponse(null, challenges);
   }
@@ -80,8 +86,22 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id/txid')
-  async updateTXID(@Body('txid') txid: string, @Param('id') orderId: number, @Request() req) {
+  async updateTXID(
+    @Body('txid') txid: string,
+    @Param('id') orderId: number,
+    @Request() req,
+  ) {
     const data = await this.ordersService.updateTxid(orderId, txid);
     return createOkResponse(null, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:challengeId/apply-discount/:discountCode')
+  async applyDiscountToOrder(
+    @Param('challengeId') challengeId: number,
+    @Param('discountCode') discountCode: string,
+  ) {
+    const updatedPrice = await this.ordersService.getUpdatedPrice(challengeId, discountCode);
+    return createOkResponse(null, { updatedPrice });
   }
 }

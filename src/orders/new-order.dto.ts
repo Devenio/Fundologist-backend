@@ -1,4 +1,4 @@
-import { isEnum, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { isEnum, IsString, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { PLATFORMS } from 'entities/UserOrders';
 
 export enum PAYMENT_TYPES {
@@ -22,4 +22,8 @@ export class NewOrderDto {
   @IsEnum(PAYMENT_TYPES)
   @IsNotEmpty()
   readonly paymentType: PAYMENT_TYPES;
+
+  @IsString()
+  @IsOptional()
+  readonly discountCode: string;
 }
